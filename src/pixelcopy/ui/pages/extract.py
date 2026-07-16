@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from PySide6.QtCore import Signal
+from PySide6.QtCore import Qt, Signal
 from PySide6.QtGui import QDragEnterEvent, QDropEvent, QTextOption
 from PySide6.QtWidgets import (
     QComboBox,
@@ -133,6 +133,8 @@ class ExtractPage(Page):
         self.language_selector = QComboBox()
         self.language_selector.setAccessibleName("Recognition language")
         self.language_selector.addItem("English", "en")
+        self.language_selector.addItem("Arabic", "ar")
+        self.language_selector.addItem("English + Arabic", "en_ar")
         self.mode_selector = QComboBox()
         self.mode_selector.setAccessibleName("OCR mode")
         self.mode_selector.addItem("Paragraph", OCRMode.PARAGRAPH.value)
@@ -237,6 +239,15 @@ class ExtractPage(Page):
         self.progress.setValue(value)
 
     def display_ocr_result(self, result: OCRResult) -> None:
+        direction = (
+            Qt.LayoutDirection.RightToLeft
+            if result.recognition_language in {"ar", "en_ar"}
+            else Qt.LayoutDirection.LeftToRight
+        )
+        self.result_editor.setLayoutDirection(direction)
+        text_options = self.result_editor.document().defaultTextOption()
+        text_options.setTextDirection(direction)
+        self.result_editor.document().setDefaultTextOption(text_options)
         self.result_editor.setPlainText(result.full_text)
         self.result_status.setObjectName("mutedLabel")
         self.result_status.setText(

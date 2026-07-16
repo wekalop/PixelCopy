@@ -18,7 +18,11 @@ All notable changes will be documented here. The project follows Keep a Changelo
 - File picker, drag-and-drop, and clipboard image import.
 - Aspect-preserving source preview with bounded zoom, panning, metadata, replace, and clear behavior.
 - Actionable image import errors that preserve an already valid source.
+- Typed OCR requests, blocks, bounds, results, modes, warnings, and confidence statistics.
+- Shared OCR protocol, deterministic fake engine, and lazy local PaddleOCR 3.x adapter.
+- Direction-aware geometric reading order and confidence filtering.
+- Cancellable background OCR worker with progress, errors, editable result text, and copy action.
 
 ### Not yet implemented
 
-- OCR, preprocessing, screen capture, multilingual support, scanned PDF processing, extraction history, export, and Windows packaging.
+- Preprocessing, screen capture, multilingual support, scanned PDF processing, extraction history, export, and Windows packaging.

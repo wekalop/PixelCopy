@@ -26,6 +26,12 @@ Dependencies flow toward domain contracts. Qt widgets do not perform OCR, disk-h
 
 `ImageImportService` reads encoded bytes, detects the actual format through Pillow, verifies the content, applies non-destructive EXIF display orientation, and returns an immutable framework-independent RGBA `ImageDocument`. The original file is never modified. `ImageImportController` coordinates file, drop, and clipboard sources and translates expected failures into Extract-page messages. The Qt page owns only dialogs, signals, presentation state, and the zoomable `ImagePreview`.
 
+## OCR foundation
+
+Framework-independent `OCRRequest`, `OCROptions`, `OCRBlock`, `BoundingBox`, and `OCRResult` models retain recognition evidence and metadata. Engines implement `OCREngine`; `FakeOCREngine` keeps tests deterministic, while `PaddleOCREngine` lazily loads the official local PaddleOCR 3.x pipeline and normalizes `rec_texts`, `rec_scores`, and `rec_boxes`. Missing local dependencies or models produce setup guidance rather than a startup failure.
+
+`OCRService` applies shared confidence filtering and direction-aware reading order. `OCRController` creates one `OCRWorker` and `QThread` per request. The worker signals progress, success, cancellation, understandable errors, and terminal cleanup. Source replacement and clearing remain synchronized through controller signals.
+
 ## Data locations
 
 On Windows, roaming configuration lives under `%APPDATA%\PixelCopy`; caches, logs, and future local application data live under `%LOCALAPPDATA%\PixelCopy`. Non-Windows development uses the corresponding XDG locations. Packaged resources will be read separately from writable application data.

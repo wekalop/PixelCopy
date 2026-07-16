@@ -1,6 +1,6 @@
 # OCR Pipeline
 
-This document describes the planned deterministic local pipeline. OCR is not implemented in Milestone 1.
+The OCR foundation is implemented. Image preprocessing, multilingual model setup, and PDF orchestration are added in their later milestones.
 
 ## Stages
 
@@ -19,7 +19,7 @@ Planned profiles are Original, Automatic, Scanned document, Low contrast, Small 
 
 ## Engines and languages
 
-PaddleOCR is primary. Tesseract is optional fallback, and a fake engine keeps tests offline. Modes will cover paragraph, single line, sparse text, and practical table-oriented extraction. English, Arabic, and mixed English/Arabic require direction-aware reading order and correct RTL presentation.
+PaddleOCR 3.x is the primary local adapter and is installed through the optional `ocr` dependency group. Its runtime and models are loaded only when recognition begins. A fake engine keeps tests offline. Typed modes cover paragraph, single line, sparse text, and practical table-oriented extraction. Tesseract fallback and Arabic/mixed model setup remain later work.
 
 ## Integrity rules
 

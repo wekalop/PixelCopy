@@ -26,4 +26,6 @@ Set `$env:QT_QPA_PLATFORM = "offscreen"` before pytest in headless Windows envir
 
 Current tests cover application-data directory creation, rotating log setup, required page navigation, theme stylesheet identity and focus rules, settings defaults, malformed settings recovery, field validation, settings round trips, and live theme persistence. Image tests cover every supported encoding, content-versus-extension detection, corrupt and unsupported input, file presentation and clearing, clipboard import, metadata, and actionable errors.
 
+OCR tests cover model invariants, average confidence, left-to-right and right-to-left reading order, shared filtering, fake engine requests, PaddleOCR 3.x result normalization through an injected model-free pipeline, worker success and cancellation, background UI completion, editable results, statistics, and clipboard copy.
+
 Future OCR tests will use a fake engine by default. CI must not download large OCR models. Windows coordinate and DPI calculations, page failures, cancellation, reading order, RTL behavior, exporters, history, and packaging verification will be added with their implementation milestones.

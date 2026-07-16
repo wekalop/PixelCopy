@@ -8,8 +8,9 @@ from PySide6.QtWidgets import QHBoxLayout, QMainWindow, QStackedWidget, QWidget
 from pixelcopy.config.constants import APP_NAME
 from pixelcopy.ui.navigation import NavigationSidebar
 from pixelcopy.ui.pages.extract import ExtractPage
+from pixelcopy.ui.pages.history import HistoryPage
 from pixelcopy.ui.pages.pdf import PDFPage
-from pixelcopy.ui.pages.placeholder import AboutPage, PlaceholderPage
+from pixelcopy.ui.pages.placeholder import AboutPage
 from pixelcopy.ui.pages.settings import SettingsPage
 
 
@@ -20,6 +21,7 @@ class MainWindow(QMainWindow):
         self,
         theme: str = "light",
         shortcut: str = "Ctrl+Shift+X",
+        save_history: bool = False,
         parent: QWidget | None = None,
     ) -> None:
         super().__init__(parent)
@@ -45,15 +47,9 @@ class MainWindow(QMainWindow):
         self._add_page("extract", self.extract_page)
         self.pdf_page = PDFPage()
         self._add_page("pdf", self.pdf_page)
-        self._add_page(
-            "history",
-            PlaceholderPage(
-                "History",
-                "Optionally save, search, favorite, and manage local extractions.",
-                "Milestone 8",
-            ),
-        )
-        self.settings_page = SettingsPage(theme, shortcut)
+        self.history_page = HistoryPage()
+        self._add_page("history", self.history_page)
+        self.settings_page = SettingsPage(theme, shortcut, save_history)
         self._add_page("settings", self.settings_page)
         self._add_page("about", AboutPage())
 

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from PySide6.QtCore import Signal
 from PySide6.QtWidgets import (
+    QCheckBox,
     QComboBox,
     QFormLayout,
     QFrame,
@@ -21,11 +22,13 @@ class SettingsPage(Page):
 
     theme_changed = Signal(str)
     shortcut_changed = Signal(str)
+    history_changed = Signal(bool)
 
     def __init__(
         self,
         theme: str,
         shortcut: str = "Ctrl+Shift+X",
+        save_history: bool = False,
         parent: QWidget | None = None,
     ) -> None:
         super().__init__(
@@ -64,6 +67,10 @@ class SettingsPage(Page):
         self.shortcut_editor.setToolTip("Example: Ctrl+Shift+X")
         self.shortcut_editor.editingFinished.connect(self._emit_shortcut)
         form.addRow("Capture shortcut", self.shortcut_editor)
+        self.history_checkbox = QCheckBox("Save extraction history locally")
+        self.history_checkbox.setChecked(save_history)
+        self.history_checkbox.toggled.connect(self.history_changed)
+        form.addRow("History", self.history_checkbox)
         card_layout.addLayout(form)
         card_layout.addStretch(1)
         self.page_layout.addWidget(card, 1)

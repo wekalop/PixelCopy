@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from PySide6.QtCore import QObject, QThread, Slot
+from PySide6.QtCore import QObject, QThread, Signal, Slot
 from PySide6.QtWidgets import QApplication
 
 from pixelcopy.domain.images import ImageDocument
@@ -81,6 +81,8 @@ class OCRController(QObject):
     @Slot(OCRResult)
     def _recognition_succeeded(self, result: OCRResult) -> None:
         self._page.display_ocr_result(result)
+        if self._document is not None:
+            self.result_available.emit((result, self._document))
 
     @Slot()
     def _task_finished(self) -> None:
@@ -92,3 +94,5 @@ class OCRController(QObject):
     def copy_result(self) -> None:
         """Copy the currently edited result text to the local clipboard."""
         self._application.clipboard().setText(self._page.result_editor.toPlainText())
+
+    result_available = Signal(object)

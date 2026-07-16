@@ -12,10 +12,12 @@ from PySide6.QtWidgets import QApplication
 from pixelcopy.config.constants import APP_NAME, APP_ORGANIZATION, APP_VERSION
 from pixelcopy.config.settings import ApplicationSettings, SettingsStore
 from pixelcopy.controllers.capture_controller import CaptureController
+from pixelcopy.controllers.history_controller import HistoryController
 from pixelcopy.controllers.image_import_controller import ImageImportController
 from pixelcopy.controllers.ocr_controller import OCRController
 from pixelcopy.controllers.pdf_controller import PDFController
 from pixelcopy.controllers.preprocessing_controller import PreprocessingController
+from pixelcopy.database.repositories import HistoryRepository
 from pixelcopy.ocr.base_engine import OCREngine
 from pixelcopy.ocr.paddle_engine import PaddleOCREngine
 from pixelcopy.preprocessing.pipeline import PreprocessingPipeline
@@ -49,13 +51,18 @@ class ApplicationController(QObject):
         application: QApplication,
         settings_store: SettingsStore,
         ocr_engine: OCREngine | None = None,
+        history_repository: HistoryRepository | None = None,
     ) -> None:
         super().__init__()
         self._application = application
         self._settings_store = settings_store
         self._settings = settings_store.load()
         apply_theme(application, Theme(self._settings.theme))
-        self.window = MainWindow(self._settings.theme, self._settings.global_shortcut)
+        self.window = MainWindow(
+            self._settings.theme,
+            self._settings.global_shortcut,
+            self._settings.save_history,
+        )
         self.image_import_controller = ImageImportController(
             application,
             self.window.extract_page,
@@ -91,9 +98,23 @@ class ApplicationController(QObject):
             PDFService(),
             self.ocr_service,
         )
+        self.history_controller = (
+            HistoryController(
+                application,
+                self.window.history_page,
+                self.window.extract_page,
+                history_repository,
+                self._settings.save_history,
+            )
+            if history_repository is not None
+            else None
+        )
+        if self.history_controller is not None:
+            self.ocr_controller.result_available.connect(self.history_controller.set_latest)
         application.aboutToQuit.connect(self.capture_controller.close)
         self.window.settings_page.theme_changed.connect(self.change_theme)
         self.window.settings_page.shortcut_changed.connect(self.change_shortcut)
+        self.window.settings_page.history_changed.connect(self.change_history)
 
     def start(self) -> None:
         """Show the main application window."""
@@ -113,6 +134,14 @@ class ApplicationController(QObject):
         updated = replace(self._settings, global_shortcut=value)
         self._settings_store.save(updated)
         self._settings = updated
+
+    def change_history(self, enabled: bool) -> None:
+        """Persist the explicit local-history privacy preference."""
+        updated = replace(self._settings, save_history=enabled)
+        self._settings_store.save(updated)
+        self._settings = updated
+        if self.history_controller is not None:
+            self.history_controller.set_enabled(enabled)
 
     def change_theme(self, value: str) -> None:
         """Validate, apply, and persist a user-selected theme."""

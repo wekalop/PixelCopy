@@ -30,4 +30,6 @@ OCR tests cover model invariants, average confidence, left-to-right and right-to
 
 Preprocessing tests lock the stage order, profile values, source immutability, rotation and upscale dimensions, original passthrough, cancellation, processed-preview creation, reset, and image/OCR workflow regressions.
 
+Capture tests cover shortcut parsing, conflicts represented as typed errors, negative monitor origins, and logical-to-physical DPI mapping. Multilingual tests cover language choices, RTL editor direction, Unicode preservation, and right-to-left reading order without downloading models.
+
 Future OCR tests will use a fake engine by default. CI must not download large OCR models. Windows coordinate and DPI calculations, page failures, cancellation, reading order, RTL behavior, exporters, history, and packaging verification will be added with their implementation milestones.

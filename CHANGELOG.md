@@ -26,7 +26,11 @@ All notable changes will be documented here. The project follows Keep a Changelo
 - Original, Automatic, Scanned document, Low contrast, Small text, Dark background, and Custom profiles.
 - Rotation, grayscale, contrast, brightness, denoise, sharpen, threshold, invert, deskew, and upscale controls.
 - Cancellable background processed preview with original reset and OCR handoff.
+- Configurable native Windows capture shortcut with conflict reporting and clean unregister.
+- Multi-monitor capture overlay with negative-coordinate and per-monitor DPI mapping.
+- Escape cancellation, minimum selection validation, capture import, and focus restoration.
+- English, Arabic, and mixed-language selection with direction-aware ordering and RTL results.
 
 ### Not yet implemented
 
-- Screen capture, multilingual support, scanned PDF processing, extraction history, export, and Windows packaging.
+- Scanned PDF processing, extraction history, export, and Windows packaging.

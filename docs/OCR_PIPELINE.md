@@ -19,7 +19,7 @@ Implemented profiles are Original, Automatic, Scanned document, Low contrast, Sm
 
 ## Engines and languages
 
-PaddleOCR 3.x is the primary local adapter and is installed through the optional `ocr` dependency group. Its runtime and models are loaded only when recognition begins. A fake engine keeps tests offline. Typed modes cover paragraph, single line, sparse text, and practical table-oriented extraction. Tesseract fallback and Arabic/mixed model setup remain later work.
+PaddleOCR 3.x is the primary local adapter and is installed through the optional `ocr` dependency group. Its runtime and English or Arabic model are loaded only when recognition begins. A fake engine keeps tests offline. Typed modes cover paragraph, single line, sparse text, and practical table-oriented extraction. English, Arabic, and mixed selection use direction-aware reading order and RTL presentation; Tesseract fallback remains future work.
 
 ## Integrity rules
 

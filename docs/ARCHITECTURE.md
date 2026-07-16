@@ -36,6 +36,12 @@ Framework-independent `OCRRequest`, `OCROptions`, `OCRBlock`, `BoundingBox`, and
 
 Immutable `PreprocessingOptions` and named profiles feed `PreprocessingPipeline`. The OpenCV pipeline exposes and enforces a stable stage order, checks cancellation between expensive stages, and returns a new RGBA `ImageDocument` without modifying the source. `PreprocessingController` owns a dedicated worker thread, updates the processed preview, and hands only successful derived documents to the OCR controller. Reset restores the retained original document.
 
+## Windows capture and multilingual results
+
+`WindowsGlobalShortcut` owns `RegisterHotKey` registration and native-event filtering and always unregisters during application shutdown. `ScreenCaptureOverlay` spans the union of monitor geometries; `ScreenshotService` intersects the selection per screen and maps logical coordinates to physical pixels using each display scale. `CaptureController` returns the local image to the ordinary validated import path and restores the main window.
+
+The OCR options and Paddle adapter accept English, Arabic, and mixed language modes. Shared reading order reverses horizontal ordering for RTL results while preserving visual lines, and the editor applies an RTL text direction for Arabic or mixed output.
+
 ## Data locations
 
 On Windows, roaming configuration lives under `%APPDATA%\PixelCopy`; caches, logs, and future local application data live under `%LOCALAPPDATA%\PixelCopy`. Non-Windows development uses the corresponding XDG locations. Packaged resources will be read separately from writable application data.

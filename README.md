@@ -6,7 +6,7 @@ PixelCopy is a privacy-first Windows desktop application for extracting editable
 
 ## Current status
 
-PixelCopy is in pre-alpha. Milestones 1 through 4 provide the typed application foundation, image import, structured local OCR, editable results, and an immutable OpenCV preprocessing workflow. Users can select named or custom rotation, grayscale, contrast, brightness, denoise, sharpen, threshold, inversion, deskew, and upscale stages, preview derived pixels, reset to the original, and send the processed image to OCR. Capture, PDFs, history, export, and packaging remain later milestones.
+PixelCopy is in pre-alpha. Milestones 1 through 6 provide image import, structured local OCR, preprocessing, DPI-aware multi-monitor region capture through `Ctrl+Shift+X`, and English, Arabic, or mixed-language results with RTL rendering. Scanned PDFs, history, export, and packaging remain later milestones.
 
 ## Requirements
 

@@ -50,6 +50,10 @@ The OCR options and Paddle adapter accept English, Arabic, and mixed language mo
 
 `HistoryRepository` uses a versioned SQLite schema and FTS5 index with transactional triggers. `HistoryController` receives completed OCR evidence but writes the currently edited text only after an explicit Save action and only while history is enabled. Deletion accepts multiple IDs and removes thumbnails only when their resolved parent is the application-owned thumbnail directory.
 
+## Export
+
+`ExportService` selects a typed exporter behind one protocol. Text and Markdown use the edited result; JSON retains structured OCR evidence; CSV emits one row per compatible block; and searchable PDF places the source image and an invisible positioned text layer on each page. Destination validation rejects missing folders and existing files before writing.
+
 ## Data locations
 
 On Windows, roaming configuration lives under `%APPDATA%\PixelCopy`; caches, logs, and future local application data live under `%LOCALAPPDATA%\PixelCopy`. Non-Windows development uses the corresponding XDG locations. Packaged resources will be read separately from writable application data.

@@ -35,7 +35,9 @@ All notable changes will be documented here. The project follows Keep a Changelo
 - Per-page progress, cancellation, visible failures, page separators, and failed-page retry.
 - Versioned SQLite and FTS5 history repository with search, favorites, rename, and deletion.
 - Privacy-gated local history UI with preview, copy, multi-delete, clear, and safe thumbnail cleanup.
+- TXT, Markdown, structured JSON, block CSV, and image-backed searchable PDF export.
+- Dialog-free export service API, edited-text fidelity, destination validation, and overwrite protection.
 
 ### Not yet implemented
 
-- Export and Windows packaging.
+- Windows packaging.

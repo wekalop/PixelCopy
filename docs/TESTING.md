@@ -36,4 +36,6 @@ PDF tests create small synthetic documents and cover range validation, metadata,
 
 History tests cover migrations, FTS search, opt-in enforcement, edited-text saving, favorites, rename, preview, copy, multi-ID deletion, clear behavior, and protection against deleting thumbnail paths outside the owned directory.
 
+Export tests cover edited-text fidelity, structured JSON, UTF-8 CSV evidence, selectable searchable-PDF text, source-image pages, existing-file protection, and dialog-free UI orchestration.
+
 Future OCR tests will use a fake engine by default. CI must not download large OCR models. Windows coordinate and DPI calculations, page failures, cancellation, reading order, RTL behavior, exporters, history, and packaging verification will be added with their implementation milestones.

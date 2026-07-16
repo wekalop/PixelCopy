@@ -1,0 +1,1 @@
+"""Deterministic OpenCV preprocessing pipeline."""

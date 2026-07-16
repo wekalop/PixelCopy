@@ -20,6 +20,8 @@ classifiers = [
   "Typing :: Typed",
 ]
 dependencies = [
+  "numpy>=2,<3",
+  "opencv-python>=4.10,<5",
   "Pillow>=11.1,<13",
   "PySide6>=6.8,<7",
 ]
@@ -34,7 +36,6 @@ dev = [
 ]
 build = ["pyinstaller>=6.11,<7"]
 ocr = [
-  "numpy>=2,<3",
   "paddleocr>=3,<4",
   "paddlepaddle>=3,<4",
 ]

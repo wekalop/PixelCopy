@@ -1,0 +1,1 @@
+"""Application visual themes."""

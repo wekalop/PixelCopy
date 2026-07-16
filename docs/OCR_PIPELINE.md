@@ -1,6 +1,6 @@
 # OCR Pipeline
 
-The OCR foundation is implemented. Image preprocessing, multilingual model setup, and PDF orchestration are added in their later milestones.
+The OCR foundation and image preprocessing are implemented. Multilingual model setup and PDF orchestration are added in their later milestones.
 
 ## Stages
 
@@ -15,7 +15,7 @@ The OCR foundation is implemented. Image preprocessing, multilingual model setup
 
 ## Preprocessing profiles
 
-Planned profiles are Original, Automatic, Scanned document, Low contrast, Small text, Dark background, and Custom. Stages may include rotation, cropping, grayscale, contrast, brightness, denoise, sharpen, adaptive or binary threshold, inversion, deskew, upscale, and safe border removal. Order will be explicit and regression-tested.
+Implemented profiles are Original, Automatic, Scanned document, Low contrast, Small text, Dark background, and Custom. The current explicit order is rotation, grayscale, contrast/brightness, denoise, sharpen, adaptive or binary threshold, inversion, deskew, and upscale. Processing is cancellable between stages and creates a derived in-memory document; cropping and conservative border removal remain future additions.
 
 ## Engines and languages
 

@@ -6,7 +6,7 @@ PixelCopy is a privacy-first Windows desktop application for extracting editable
 
 ## Current status
 
-PixelCopy is in pre-alpha. Milestones 1 through 3 provide the typed application foundation, polished PySide6 shell, content-validated image import, structured OCR results, a local PaddleOCR adapter, deterministic reading order, cancellable background recognition, and an editable result with copy and confidence statistics. Preprocessing, capture, PDFs, history, export, and packaging are planned for later milestones and are not yet implemented.
+PixelCopy is in pre-alpha. Milestones 1 through 4 provide the typed application foundation, image import, structured local OCR, editable results, and an immutable OpenCV preprocessing workflow. Users can select named or custom rotation, grayscale, contrast, brightness, denoise, sharpen, threshold, inversion, deskew, and upscale stages, preview derived pixels, reset to the original, and send the processed image to OCR. Capture, PDFs, history, export, and packaging remain later milestones.
 
 ## Requirements
 
@@ -25,7 +25,7 @@ python -m pip install -e ".[dev]"
 python -m pixelcopy
 ```
 
-The standard runtime installs PySide6 and Pillow. Install `.[ocr]` to add the large local PaddleOCR runtime and models, or continue using the fake engine in tests. CI does not install OCR extras or download models.
+The standard runtime installs PySide6, Pillow, NumPy, and OpenCV. Install `.[ocr]` to add the large local PaddleOCR runtime and models, or continue using the fake engine in tests. CI does not install OCR extras or download models.
 
 ## Verification
 

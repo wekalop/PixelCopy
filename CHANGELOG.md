@@ -22,7 +22,11 @@ All notable changes will be documented here. The project follows Keep a Changelo
 - Shared OCR protocol, deterministic fake engine, and lazy local PaddleOCR 3.x adapter.
 - Direction-aware geometric reading order and confidence filtering.
 - Cancellable background OCR worker with progress, errors, editable result text, and copy action.
+- Immutable OpenCV preprocessing pipeline with explicit, tested stage order.
+- Original, Automatic, Scanned document, Low contrast, Small text, Dark background, and Custom profiles.
+- Rotation, grayscale, contrast, brightness, denoise, sharpen, threshold, invert, deskew, and upscale controls.
+- Cancellable background processed preview with original reset and OCR handoff.
 
 ### Not yet implemented
 
-- Preprocessing, screen capture, multilingual support, scanned PDF processing, extraction history, export, and Windows packaging.
+- Screen capture, multilingual support, scanned PDF processing, extraction history, export, and Windows packaging.

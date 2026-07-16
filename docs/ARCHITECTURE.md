@@ -32,6 +32,10 @@ Framework-independent `OCRRequest`, `OCROptions`, `OCRBlock`, `BoundingBox`, and
 
 `OCRService` applies shared confidence filtering and direction-aware reading order. `OCRController` creates one `OCRWorker` and `QThread` per request. The worker signals progress, success, cancellation, understandable errors, and terminal cleanup. Source replacement and clearing remain synchronized through controller signals.
 
+## Preprocessing
+
+Immutable `PreprocessingOptions` and named profiles feed `PreprocessingPipeline`. The OpenCV pipeline exposes and enforces a stable stage order, checks cancellation between expensive stages, and returns a new RGBA `ImageDocument` without modifying the source. `PreprocessingController` owns a dedicated worker thread, updates the processed preview, and hands only successful derived documents to the OCR controller. Reset restores the retained original document.
+
 ## Data locations
 
 On Windows, roaming configuration lives under `%APPDATA%\PixelCopy`; caches, logs, and future local application data live under `%LOCALAPPDATA%\PixelCopy`. Non-Windows development uses the corresponding XDG locations. Packaged resources will be read separately from writable application data.

@@ -11,7 +11,7 @@ Scanned PDFs are opened locally and pages are rendered incrementally in memory. 
 
 ## Future optional history
 
-History will be disabled by default. While disabled, PixelCopy will not save OCR text, thumbnails, or source content. When enabled, documentation and UI will identify fields and local locations. Deleting an item will also safely delete its associated local thumbnail. Clearing history will require an explicit user action.
+History is disabled by default. While disabled, PixelCopy does not save OCR text, thumbnails, or source content. When enabled, only an explicit Save action writes the currently edited text and structured metadata to `%LOCALAPPDATA%\PixelCopy\history.sqlite3`. Deleting an item also removes an associated thumbnail only from the application-owned thumbnail directory. Multi-delete and clear-all are explicit user actions.
 
 ## Temporary data
 

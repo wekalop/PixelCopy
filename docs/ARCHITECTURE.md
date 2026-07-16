@@ -46,6 +46,10 @@ The OCR options and Paddle adapter accept English, Arabic, and mixed language mo
 
 `PDFService` opens a document only long enough to inspect it or render one requested page or thumbnail through PyMuPDF. `PDFThumbnailWorker` and `PDFWorker` run outside the GUI thread. The OCR worker continues after individual page errors, annotates blocks and results with page numbers, includes every failure in the combined text, reports progress, supports cancellation, and retains failed indexes for explicit retry.
 
+## Local history
+
+`HistoryRepository` uses a versioned SQLite schema and FTS5 index with transactional triggers. `HistoryController` receives completed OCR evidence but writes the currently edited text only after an explicit Save action and only while history is enabled. Deletion accepts multiple IDs and removes thumbnails only when their resolved parent is the application-owned thumbnail directory.
+
 ## Data locations
 
 On Windows, roaming configuration lives under `%APPDATA%\PixelCopy`; caches, logs, and future local application data live under `%LOCALAPPDATA%\PixelCopy`. Non-Windows development uses the corresponding XDG locations. Packaged resources will be read separately from writable application data.

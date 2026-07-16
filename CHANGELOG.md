@@ -33,7 +33,9 @@ All notable changes will be documented here. The project follows Keep a Changelo
 - Validated scanned PDF inspection, page counts, ranges, and incremental PyMuPDF rendering.
 - Background page thumbnails and memory-conscious multi-page OCR.
 - Per-page progress, cancellation, visible failures, page separators, and failed-page retry.
+- Versioned SQLite and FTS5 history repository with search, favorites, rename, and deletion.
+- Privacy-gated local history UI with preview, copy, multi-delete, clear, and safe thumbnail cleanup.
 
 ### Not yet implemented
 
-- Extraction history, export, and Windows packaging.
+- Export and Windows packaging.

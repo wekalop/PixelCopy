@@ -34,4 +34,6 @@ Capture tests cover shortcut parsing, conflicts represented as typed errors, neg
 
 PDF tests create small synthetic documents and cover range validation, metadata, incremental rendering, thumbnails, background extraction, page annotations, visible per-page failures, separators, retry state, and navigation without model downloads.
 
+History tests cover migrations, FTS search, opt-in enforcement, edited-text saving, favorites, rename, preview, copy, multi-ID deletion, clear behavior, and protection against deleting thumbnail paths outside the owned directory.
+
 Future OCR tests will use a fake engine by default. CI must not download large OCR models. Windows coordinate and DPI calculations, page failures, cancellation, reading order, RTL behavior, exporters, history, and packaging verification will be added with their implementation milestones.

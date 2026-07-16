@@ -6,7 +6,7 @@ PixelCopy is a privacy-first Windows desktop application for extracting editable
 
 ## Current status
 
-PixelCopy is in pre-alpha. Milestones 1 through 7 provide image import, structured local OCR, preprocessing, DPI-aware region capture, multilingual results, and scanned PDF extraction with thumbnails, page ranges, progress, cancellation, page failures, and retry. History, export, and packaging remain later milestones.
+PixelCopy is in pre-alpha. Milestones 1 through 8 provide image import, structured local OCR, preprocessing, DPI-aware capture, multilingual results, scanned PDFs, and optional searchable SQLite history. History is disabled by default and saves only explicitly requested edited results. Export and packaging remain later milestones.
 
 ## Requirements
 

@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import cast
 
 from PySide6.QtCore import QBuffer, QIODevice, QObject, Signal
+from PySide6.QtGui import QImage
 from PySide6.QtWidgets import QApplication
 
 from pixelcopy.domain.exceptions import ImageImportError
@@ -49,7 +50,10 @@ class ImageImportController(QObject):
         if image.isNull():
             self._page.display_error("The clipboard does not contain an image.")
             return
+        self.import_qimage(image, "Clipboard image")
 
+    def import_qimage(self, image: QImage, source_name: str) -> None:
+        """Encode a Qt image locally and pass it through content validation."""
         buffer = QBuffer()
         qt_png_format = cast(bytes, "PNG")
         if not buffer.open(QIODevice.OpenModeFlag.WriteOnly) or not image.save(
@@ -60,7 +64,7 @@ class ImageImportController(QObject):
         try:
             raw_content = buffer.data().data()
             content = raw_content if isinstance(raw_content, bytes) else bytes(raw_content)
-            document = self._service.load_bytes(content, "Clipboard image")
+            document = self._service.load_bytes(content, source_name)
         except ImageImportError as error:
             self._page.display_error(str(error))
             return

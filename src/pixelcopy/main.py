@@ -21,4 +21,5 @@ def main(arguments: Sequence[str] | None = None) -> int:
     settings_store = SettingsStore(paths.config_dir / "settings.json", logger)
     controller = ApplicationController(app, settings_store)
     controller.start()
+    controller.enable_global_shortcut()
     return app.exec()

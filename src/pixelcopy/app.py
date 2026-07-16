@@ -11,6 +11,7 @@ from PySide6.QtWidgets import QApplication
 
 from pixelcopy.config.constants import APP_NAME, APP_ORGANIZATION, APP_VERSION
 from pixelcopy.config.settings import ApplicationSettings, SettingsStore
+from pixelcopy.controllers.capture_controller import CaptureController
 from pixelcopy.controllers.image_import_controller import ImageImportController
 from pixelcopy.controllers.ocr_controller import OCRController
 from pixelcopy.controllers.preprocessing_controller import PreprocessingController
@@ -52,7 +53,7 @@ class ApplicationController(QObject):
         self._settings_store = settings_store
         self._settings = settings_store.load()
         apply_theme(application, Theme(self._settings.theme))
-        self.window = MainWindow(self._settings.theme)
+        self.window = MainWindow(self._settings.theme, self._settings.global_shortcut)
         self.image_import_controller = ImageImportController(
             application,
             self.window.extract_page,
@@ -77,11 +78,33 @@ class ApplicationController(QObject):
         )
         self.preprocessing_controller.document_processed.connect(self.ocr_controller.set_document)
         self.preprocessing_controller.original_restored.connect(self.ocr_controller.set_document)
+        self.capture_controller = CaptureController(
+            application,
+            self.window.extract_page,
+            self.image_import_controller,
+        )
+        application.aboutToQuit.connect(self.capture_controller.close)
         self.window.settings_page.theme_changed.connect(self.change_theme)
+        self.window.settings_page.shortcut_changed.connect(self.change_shortcut)
 
     def start(self) -> None:
         """Show the main application window."""
         self.window.show()
+
+    def enable_global_shortcut(self) -> None:
+        """Register the configured Windows screen-capture shortcut."""
+        self.capture_controller.register_shortcut(self._settings.global_shortcut)
+
+    def change_shortcut(self, value: str) -> None:
+        """Register and persist a valid conflict-free capture shortcut."""
+        if not value or value == self._settings.global_shortcut:
+            return
+        if not self.capture_controller.register_shortcut(value):
+            self.window.settings_page.shortcut_editor.setText(self._settings.global_shortcut)
+            return
+        updated = replace(self._settings, global_shortcut=value)
+        self._settings_store.save(updated)
+        self._settings = updated
 
     def change_theme(self, value: str) -> None:
         """Validate, apply, and persist a user-selected theme."""

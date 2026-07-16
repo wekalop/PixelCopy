@@ -35,6 +35,7 @@ class ExtractPage(Page):
     file_selected = Signal(Path)
     paste_requested = Signal()
     source_cleared = Signal()
+    capture_requested = Signal()
     extract_requested = Signal(str, str, float)
     cancel_requested = Signal()
     copy_requested = Signal()
@@ -105,9 +106,17 @@ class ExtractPage(Page):
         self.paste_button = QPushButton("Paste")
         self.paste_button.setShortcut("Ctrl+V")
         self.paste_button.clicked.connect(self.paste_requested)
+        self.capture_button = QPushButton("Capture")
+        self.capture_button.setToolTip("Select a screen region (Ctrl+Shift+X)")
+        self.capture_button.clicked.connect(self.capture_requested)
         self.clear_button = QPushButton("Clear")
         self.clear_button.clicked.connect(self.source_cleared)
-        for button in (self.open_button, self.paste_button, self.clear_button):
+        for button in (
+            self.open_button,
+            self.paste_button,
+            self.capture_button,
+            self.clear_button,
+        ):
             import_actions.addWidget(button)
         layout.addLayout(import_actions)
         return card
@@ -285,6 +294,7 @@ class ExtractPage(Page):
             control.setEnabled(self._has_source and not self._ocr_busy)
         self.open_button.setEnabled(not self._ocr_busy)
         self.paste_button.setEnabled(not self._ocr_busy)
+        self.capture_button.setEnabled(not self._ocr_busy)
         self.extract_button.setEnabled(self._has_source and not self._ocr_busy)
         self.cancel_button.setEnabled(self._ocr_busy)
         self.copy_button.setEnabled(bool(self.result_editor.toPlainText()) and not self._ocr_busy)

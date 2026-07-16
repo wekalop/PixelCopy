@@ -15,7 +15,12 @@ from pixelcopy.ui.pages.settings import SettingsPage
 class MainWindow(QMainWindow):
     """Application shell coordinating navigation between top-level pages."""
 
-    def __init__(self, theme: str = "light", parent: QWidget | None = None) -> None:
+    def __init__(
+        self,
+        theme: str = "light",
+        shortcut: str = "Ctrl+Shift+X",
+        parent: QWidget | None = None,
+    ) -> None:
         super().__init__(parent)
         self.setObjectName("mainWindow")
         self.setWindowTitle(APP_NAME)
@@ -54,7 +59,7 @@ class MainWindow(QMainWindow):
                 "Milestone 8",
             ),
         )
-        self.settings_page = SettingsPage(theme)
+        self.settings_page = SettingsPage(theme, shortcut)
         self._add_page("settings", self.settings_page)
         self._add_page("about", AboutPage())
 

@@ -3,7 +3,15 @@
 from __future__ import annotations
 
 from PySide6.QtCore import Signal
-from PySide6.QtWidgets import QComboBox, QFormLayout, QFrame, QLabel, QVBoxLayout, QWidget
+from PySide6.QtWidgets import (
+    QComboBox,
+    QFormLayout,
+    QFrame,
+    QLabel,
+    QLineEdit,
+    QVBoxLayout,
+    QWidget,
+)
 
 from pixelcopy.ui.pages.base import Page
 
@@ -12,8 +20,14 @@ class SettingsPage(Page):
     """User preferences available in the foundation milestone."""
 
     theme_changed = Signal(str)
+    shortcut_changed = Signal(str)
 
-    def __init__(self, theme: str, parent: QWidget | None = None) -> None:
+    def __init__(
+        self,
+        theme: str,
+        shortcut: str = "Ctrl+Shift+X",
+        parent: QWidget | None = None,
+    ) -> None:
         super().__init__(
             "Settings",
             "Choose the application appearance. OCR and workflow preferences "
@@ -45,6 +59,11 @@ class SettingsPage(Page):
         self.theme_selector.setCurrentIndex(max(0, index))
         self.theme_selector.currentIndexChanged.connect(self._emit_theme)
         form.addRow("Theme", self.theme_selector)
+        self.shortcut_editor = QLineEdit(shortcut)
+        self.shortcut_editor.setAccessibleName("Global capture shortcut")
+        self.shortcut_editor.setToolTip("Example: Ctrl+Shift+X")
+        self.shortcut_editor.editingFinished.connect(self._emit_shortcut)
+        form.addRow("Capture shortcut", self.shortcut_editor)
         card_layout.addLayout(form)
         card_layout.addStretch(1)
         self.page_layout.addWidget(card, 1)
@@ -53,3 +72,6 @@ class SettingsPage(Page):
         theme = self.theme_selector.currentData()
         if isinstance(theme, str):
             self.theme_changed.emit(theme)
+
+    def _emit_shortcut(self) -> None:
+        self.shortcut_changed.emit(self.shortcut_editor.text().strip())

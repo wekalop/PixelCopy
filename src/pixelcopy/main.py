@@ -4,10 +4,9 @@ from __future__ import annotations
 
 from collections.abc import Sequence
 
-from pixelcopy.app import create_application
+from pixelcopy.app import ApplicationController, create_application
 from pixelcopy.config.paths import AppPaths
-from pixelcopy.ui.main_window import MainWindow
-from pixelcopy.ui.styles.theme import Theme, apply_theme
+from pixelcopy.config.settings import SettingsStore
 from pixelcopy.utils.logging import configure_logging
 
 
@@ -19,7 +18,7 @@ def main(arguments: Sequence[str] | None = None) -> int:
     logger.info("PixelCopy starting")
 
     app = create_application(arguments)
-    apply_theme(app, Theme.LIGHT)
-    window = MainWindow()
-    window.show()
+    settings_store = SettingsStore(paths.config_dir / "settings.json", logger)
+    controller = ApplicationController(app, settings_store)
+    controller.start()
     return app.exec()

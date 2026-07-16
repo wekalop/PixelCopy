@@ -9,12 +9,13 @@ from pixelcopy.config.constants import APP_NAME
 from pixelcopy.ui.navigation import NavigationSidebar
 from pixelcopy.ui.pages.extract import ExtractPage
 from pixelcopy.ui.pages.placeholder import AboutPage, PlaceholderPage
+from pixelcopy.ui.pages.settings import SettingsPage
 
 
 class MainWindow(QMainWindow):
     """Application shell coordinating navigation between top-level pages."""
 
-    def __init__(self, parent: QWidget | None = None) -> None:
+    def __init__(self, theme: str = "light", parent: QWidget | None = None) -> None:
         super().__init__(parent)
         self.setObjectName("mainWindow")
         self.setWindowTitle(APP_NAME)
@@ -52,15 +53,8 @@ class MainWindow(QMainWindow):
                 "Milestone 8",
             ),
         )
-        self._add_page(
-            "settings",
-            PlaceholderPage(
-                "Settings",
-                "Control appearance, OCR preferences, privacy, shortcuts, "
-                "and application behavior.",
-                "Milestone 1 settings foundation",
-            ),
-        )
+        self.settings_page = SettingsPage(theme)
+        self._add_page("settings", self.settings_page)
         self._add_page("about", AboutPage())
 
         self.navigation.page_requested.connect(self.show_page)

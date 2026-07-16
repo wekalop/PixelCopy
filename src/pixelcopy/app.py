@@ -14,12 +14,14 @@ from pixelcopy.config.settings import ApplicationSettings, SettingsStore
 from pixelcopy.controllers.capture_controller import CaptureController
 from pixelcopy.controllers.image_import_controller import ImageImportController
 from pixelcopy.controllers.ocr_controller import OCRController
+from pixelcopy.controllers.pdf_controller import PDFController
 from pixelcopy.controllers.preprocessing_controller import PreprocessingController
 from pixelcopy.ocr.base_engine import OCREngine
 from pixelcopy.ocr.paddle_engine import PaddleOCREngine
 from pixelcopy.preprocessing.pipeline import PreprocessingPipeline
 from pixelcopy.services.image_import_service import ImageImportService
 from pixelcopy.services.ocr_service import OCRService
+from pixelcopy.services.pdf_service import PDFService
 from pixelcopy.ui.main_window import MainWindow
 from pixelcopy.ui.styles.theme import Theme, apply_theme
 
@@ -59,10 +61,11 @@ class ApplicationController(QObject):
             self.window.extract_page,
             ImageImportService(),
         )
+        self.ocr_service = OCRService(ocr_engine or PaddleOCREngine())
         self.ocr_controller = OCRController(
             application,
             self.window.extract_page,
-            OCRService(ocr_engine or PaddleOCREngine()),
+            self.ocr_service,
         )
         self.preprocessing_controller = PreprocessingController(
             self.window.extract_page,
@@ -82,6 +85,11 @@ class ApplicationController(QObject):
             application,
             self.window.extract_page,
             self.image_import_controller,
+        )
+        self.pdf_controller = PDFController(
+            self.window.pdf_page,
+            PDFService(),
+            self.ocr_service,
         )
         application.aboutToQuit.connect(self.capture_controller.close)
         self.window.settings_page.theme_changed.connect(self.change_theme)

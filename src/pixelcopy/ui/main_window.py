@@ -8,6 +8,7 @@ from PySide6.QtWidgets import QHBoxLayout, QMainWindow, QStackedWidget, QWidget
 from pixelcopy.config.constants import APP_NAME
 from pixelcopy.ui.navigation import NavigationSidebar
 from pixelcopy.ui.pages.extract import ExtractPage
+from pixelcopy.ui.pages.pdf import PDFPage
 from pixelcopy.ui.pages.placeholder import AboutPage, PlaceholderPage
 from pixelcopy.ui.pages.settings import SettingsPage
 
@@ -42,15 +43,8 @@ class MainWindow(QMainWindow):
 
         self.extract_page = ExtractPage()
         self._add_page("extract", self.extract_page)
-        self._add_page(
-            "pdf",
-            PlaceholderPage(
-                "PDF",
-                "Select pages from scanned documents and process them without "
-                "loading everything at once.",
-                "Milestone 7",
-            ),
-        )
+        self.pdf_page = PDFPage()
+        self._add_page("pdf", self.pdf_page)
         self._add_page(
             "history",
             PlaceholderPage(

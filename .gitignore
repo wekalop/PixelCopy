@@ -49,6 +49,8 @@ coverage.xml
 *.py.cover
 .hypothesis/
 .pytest_cache/
+.test-tmp/
+pytest-cache-files-*/
 cover/
 
 # Translations
@@ -205,6 +207,19 @@ tempCodeRunnerFile.py
 
 # Ruff stuff:
 .ruff_cache/
+
+# PixelCopy local and generated data
+*.sqlite3
+*.sqlite3-journal
+*.sqlite3-shm
+*.sqlite3-wal
+*.tmp
+logs/
+models/
+ocr_models/
+assets/samples/private/
+.coverage.*
+junit.xml
 
 # PyPI configuration file
 .pypirc

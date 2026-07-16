@@ -11,6 +11,8 @@ from PySide6.QtWidgets import QApplication
 
 from pixelcopy.config.constants import APP_NAME, APP_ORGANIZATION, APP_VERSION
 from pixelcopy.config.settings import ApplicationSettings, SettingsStore
+from pixelcopy.controllers.image_import_controller import ImageImportController
+from pixelcopy.services.image_import_service import ImageImportService
 from pixelcopy.ui.main_window import MainWindow
 from pixelcopy.ui.styles.theme import Theme, apply_theme
 
@@ -40,6 +42,11 @@ class ApplicationController(QObject):
         self._settings = settings_store.load()
         apply_theme(application, Theme(self._settings.theme))
         self.window = MainWindow(self._settings.theme)
+        self.image_import_controller = ImageImportController(
+            application,
+            self.window.extract_page,
+            ImageImportService(),
+        )
         self.window.settings_page.theme_changed.connect(self.change_theme)
 
     def start(self) -> None:

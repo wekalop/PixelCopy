@@ -50,6 +50,7 @@ def stylesheet(theme: Theme) -> str:
         QMainWindow, QWidget#appRoot {{ background: {color["background"]}; color: {color["text"]}; }}
         QLabel {{ color: {color["text"]}; background: transparent; }}
         QLabel#mutedLabel, QLabel#pageDescription, QLabel#eyebrow {{ color: {color["muted"]}; }}
+        QLabel#errorLabel {{ color: {color["danger"]}; font-weight: 600; }}
         QLabel#pageTitle {{ font-size: 28px; font-weight: 700; }}
         QLabel#cardTitle {{ font-size: 17px; font-weight: 650; }}
         QLabel#brandName {{ font-size: 20px; font-weight: 700; color: white; }}
@@ -67,6 +68,7 @@ def stylesheet(theme: Theme) -> str:
         QPushButton#navButton:hover {{ background: rgba(255, 255, 255, 0.10); color: white; }}
         QPushButton#navButton:checked {{ background: #FFFFFF; color: #173B7A; }}
         QPlainTextEdit, QLineEdit, QComboBox {{ background: {color["surface"]}; color: {color["text"]}; border: 1px solid {color["border"]}; border-radius: 8px; padding: 8px; selection-background-color: {color["accent"]}; }}
+        QGraphicsView#imagePreview {{ background: {color["surface_alt"]}; border: 1px dashed {color["border"]}; border-radius: 10px; }}
         QPlainTextEdit:focus, QLineEdit:focus, QComboBox:focus {{ border: 2px solid {color["accent"]}; }}
         QStatusBar {{ background: {color["surface"]}; color: {color["muted"]}; border-top: 1px solid {color["border"]}; }}
         QToolTip {{ background: {color["surface"]}; color: {color["text"]}; border: 1px solid {color["border"]}; padding: 5px; }}

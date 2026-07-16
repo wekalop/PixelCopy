@@ -35,7 +35,8 @@ class MainWindow(QMainWindow):
         root_layout.addWidget(self.navigation)
         root_layout.addWidget(self.pages, 1)
 
-        self._add_page("extract", ExtractPage())
+        self.extract_page = ExtractPage()
+        self._add_page("extract", self.extract_page)
         self._add_page(
             "pdf",
             PlaceholderPage(

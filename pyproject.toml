@@ -33,6 +33,12 @@ dev = [
   "types-Pillow>=10.2,<13",
 ]
 build = ["pyinstaller>=6.11,<7"]
+ocr = [
+  "numpy>=2,<3",
+  "paddleocr>=3,<4",
+  "paddlepaddle>=3,<4",
+]
+tesseract = ["pytesseract>=0.3.13,<0.4"]
 
 [project.scripts]
 pixelcopy = "pixelcopy.main:main"

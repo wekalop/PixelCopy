@@ -42,6 +42,10 @@ Immutable `PreprocessingOptions` and named profiles feed `PreprocessingPipeline`
 
 The OCR options and Paddle adapter accept English, Arabic, and mixed language modes. Shared reading order reverses horizontal ordering for RTL results while preserving visual lines, and the editor applies an RTL text direction for Arabic or mixed output.
 
+## Scanned PDFs
+
+`PDFService` opens a document only long enough to inspect it or render one requested page or thumbnail through PyMuPDF. `PDFThumbnailWorker` and `PDFWorker` run outside the GUI thread. The OCR worker continues after individual page errors, annotates blocks and results with page numbers, includes every failure in the combined text, reports progress, supports cancellation, and retains failed indexes for explicit retry.
+
 ## Data locations
 
 On Windows, roaming configuration lives under `%APPDATA%\PixelCopy`; caches, logs, and future local application data live under `%LOCALAPPDATA%\PixelCopy`. Non-Windows development uses the corresponding XDG locations. Packaged resources will be read separately from writable application data.

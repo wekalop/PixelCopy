@@ -7,6 +7,7 @@ PixelCopy is designed to process visual content locally. It must not upload imag
 PixelCopy stores a JSON settings file under the user's roaming application-data directory and rotating technical logs under the user's local application-data directory. Settings include preferences such as theme and future workflow defaults. Logs record startup and technical failures; they must never contain extracted text, document content, clipboard content, or full source paths by default.
 
 Imported image files are decoded locally and remain unmodified. The current image is retained only in application memory for display and is released when replaced, cleared, or the process exits. No source copies, thumbnails, OCR text, PDF pages, or extraction history are written to storage.
+Scanned PDFs are opened locally and pages are rendered incrementally in memory. Current thumbnail and page images are not written to persistent storage, and failed pages are reported rather than uploaded or silently omitted.
 
 ## Future optional history
 

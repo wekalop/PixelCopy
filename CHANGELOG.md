@@ -30,7 +30,10 @@ All notable changes will be documented here. The project follows Keep a Changelo
 - Multi-monitor capture overlay with negative-coordinate and per-monitor DPI mapping.
 - Escape cancellation, minimum selection validation, capture import, and focus restoration.
 - English, Arabic, and mixed-language selection with direction-aware ordering and RTL results.
+- Validated scanned PDF inspection, page counts, ranges, and incremental PyMuPDF rendering.
+- Background page thumbnails and memory-conscious multi-page OCR.
+- Per-page progress, cancellation, visible failures, page separators, and failed-page retry.
 
 ### Not yet implemented
 
-- Scanned PDF processing, extraction history, export, and Windows packaging.
+- Extraction history, export, and Windows packaging.

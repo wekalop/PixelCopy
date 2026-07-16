@@ -32,4 +32,6 @@ Preprocessing tests lock the stage order, profile values, source immutability, r
 
 Capture tests cover shortcut parsing, conflicts represented as typed errors, negative monitor origins, and logical-to-physical DPI mapping. Multilingual tests cover language choices, RTL editor direction, Unicode preservation, and right-to-left reading order without downloading models.
 
+PDF tests create small synthetic documents and cover range validation, metadata, incremental rendering, thumbnails, background extraction, page annotations, visible per-page failures, separators, retry state, and navigation without model downloads.
+
 Future OCR tests will use a fake engine by default. CI must not download large OCR models. Windows coordinate and DPI calculations, page failures, cancellation, reading order, RTL behavior, exporters, history, and packaging verification will be added with their implementation milestones.

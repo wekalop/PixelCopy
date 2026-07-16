@@ -38,4 +38,6 @@ History tests cover migrations, FTS search, opt-in enforcement, edited-text savi
 
 Export tests cover edited-text fidelity, structured JSON, UTF-8 CSV evidence, selectable searchable-PDF text, source-image pages, existing-file protection, and dialog-free UI orchestration.
 
+Polish tests cover deterministic cleanup boundaries, rejection of unknown cleanup actions, editor enablement after manual edits, line-wrap toggling, literal find/replace behavior, and accessible text status surfaces.
+
 Future OCR tests will use a fake engine by default. CI must not download large OCR models. Windows coordinate and DPI calculations, page failures, cancellation, reading order, RTL behavior, exporters, history, and packaging verification will be added with their implementation milestones.

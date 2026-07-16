@@ -37,6 +37,7 @@ All notable changes will be documented here. The project follows Keep a Changelo
 - Privacy-gated local history UI with preview, copy, multi-delete, clear, and safe thumbnail cleanup.
 - TXT, Markdown, structured JSON, block CSV, and image-backed searchable PDF export.
 - Dialog-free export service API, edited-text fidelity, destination validation, and overwrite protection.
+- Keyboard-accessible result editing, literal find/replace, line wrapping, and deterministic cleanup tools.
 
 ### Not yet implemented
 

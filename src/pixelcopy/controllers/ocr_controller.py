@@ -3,10 +3,12 @@
 from __future__ import annotations
 
 from PySide6.QtCore import QObject, QThread, Signal, Slot
+from PySide6.QtGui import QTextCursor
 from PySide6.QtWidgets import QApplication
 
 from pixelcopy.domain.images import ImageDocument
 from pixelcopy.domain.ocr import OCRMode, OCROptions, OCRRequest, OCRResult
+from pixelcopy.ocr.postprocessing import apply_cleanup
 from pixelcopy.services.ocr_service import OCRService
 from pixelcopy.ui.pages.extract import ExtractPage
 from pixelcopy.workers.ocr_worker import OCRWorker
@@ -31,6 +33,7 @@ class OCRController(QObject):
         page.extract_requested.connect(self.start_recognition)
         page.cancel_requested.connect(self.cancel)
         page.copy_requested.connect(self.copy_result)
+        page.cleanup_requested.connect(self.cleanup_result)
 
     def set_document(self, document: ImageDocument) -> None:
         """Set the validated source used by subsequent OCR requests."""
@@ -94,5 +97,19 @@ class OCRController(QObject):
     def copy_result(self) -> None:
         """Copy the currently edited result text to the local clipboard."""
         self._application.clipboard().setText(self._page.result_editor.toPlainText())
+
+    @Slot(str)
+    def cleanup_result(self, action: str) -> None:
+        """Apply an explicitly selected deterministic cleanup operation."""
+        try:
+            cleaned = apply_cleanup(self._page.result_editor.toPlainText(), action)
+        except ValueError as error:
+            self._page.display_ocr_error(str(error))
+            return
+        cursor = self._page.result_editor.textCursor()
+        cursor.beginEditBlock()
+        cursor.select(QTextCursor.SelectionType.Document)
+        cursor.insertText(cleaned)
+        cursor.endEditBlock()
 
     result_available = Signal(object)

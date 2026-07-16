@@ -16,6 +16,8 @@ Every workflow must define empty, loading, progress, cancellation, success, disa
 
 Provide visible keyboard focus, logical tab order, accessible control names, useful tooltips, sufficient contrast, and native selection/editing behavior. Do not communicate status using color alone. Arabic and mixed text surfaces must set appropriate direction without forcing the whole application into RTL.
 
+The results editor exposes native undo and redo, find and literal replace, select all, clear, line-wrap control, and explicit deterministic cleanup actions. Important shortcuts are `Ctrl+O` (open image), `Ctrl+Return` (extract), `Ctrl+F` (find/replace), `Ctrl+S` (save to enabled history), and `Ctrl+Shift+S` (export). Progress controls and result messages have accessible names and textual state; color is supplementary.
+
 ## Writing
 
 Use short, direct labels and explain recovery steps. Prefer “Could not open this image. The file is damaged or unsupported.” over technical exception text. Keep technical details in logs without including document content.

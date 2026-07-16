@@ -24,3 +24,5 @@ PaddleOCR 3.x is the primary local adapter and is installed through the optional
 ## Integrity rules
 
 The pipeline never invents uncertain text, silently drops failed pages, uploads content, or sends text to correction services. Confidence thresholds filter or warn deterministically. Logs contain technical events, not extracted documents.
+
+Postprocessing is opt-in and deterministic. The available operations normalize horizontal whitespace while preserving line boundaries, collapse repeated blank lines, and join only words that contain an explicit hyphen immediately before a line ending. Each operation is reversible through the editor undo stack.

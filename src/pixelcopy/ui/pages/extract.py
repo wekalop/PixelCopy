@@ -5,7 +5,7 @@ from __future__ import annotations
 from pathlib import Path
 
 from PySide6.QtCore import Qt, Signal
-from PySide6.QtGui import QDragEnterEvent, QDropEvent, QTextOption
+from PySide6.QtGui import QAction, QDragEnterEvent, QDropEvent, QTextOption
 from PySide6.QtWidgets import (
     QComboBox,
     QDoubleSpinBox,
@@ -13,6 +13,7 @@ from PySide6.QtWidgets import (
     QFrame,
     QHBoxLayout,
     QLabel,
+    QMenu,
     QPlainTextEdit,
     QProgressBar,
     QPushButton,
@@ -24,6 +25,7 @@ from PySide6.QtWidgets import (
 from pixelcopy.domain.images import ImageDocument
 from pixelcopy.domain.ocr import OCRMode, OCRResult
 from pixelcopy.services.image_import_service import IMAGE_FILE_FILTER
+from pixelcopy.ui.dialogs.find_replace import FindReplaceDialog
 from pixelcopy.ui.pages.base import Page
 from pixelcopy.ui.widgets.image_preview import ImagePreview
 from pixelcopy.ui.widgets.preprocessing_panel import PreprocessingPanel
@@ -41,6 +43,7 @@ class ExtractPage(Page):
     copy_requested = Signal()
     save_requested = Signal()
     export_requested = Signal()
+    cleanup_requested = Signal(str)
 
     def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(
@@ -51,6 +54,7 @@ class ExtractPage(Page):
         self.setAcceptDrops(True)
         self._has_source = False
         self._ocr_busy = False
+        self._find_dialog: FindReplaceDialog | None = None
 
         columns = QHBoxLayout()
         columns.setSpacing(18)
@@ -104,6 +108,7 @@ class ExtractPage(Page):
         import_actions = QHBoxLayout()
         self.open_button = QPushButton("Open image")
         self.open_button.setObjectName("primaryButton")
+        self.open_button.setShortcut("Ctrl+O")
         self.open_button.clicked.connect(self._choose_image)
         self.paste_button = QPushButton("Paste")
         self.paste_button.setShortcut("Ctrl+V")
@@ -161,33 +166,85 @@ class ExtractPage(Page):
 
         self.result_status = QLabel("Ready for a source image")
         self.result_status.setObjectName("mutedLabel")
+        self.result_status.setAccessibleName("Recognition status")
         self.result_status.setWordWrap(True)
         layout.addWidget(self.result_status)
         self.progress = QProgressBar()
         self.progress.setRange(0, 100)
         self.progress.setValue(0)
+        self.progress.setAccessibleName("Recognition progress")
+        self.progress.setFormat("Recognizing text locally: %p%")
         self.progress.setVisible(False)
         layout.addWidget(self.progress)
 
+        edit_actions = QHBoxLayout()
+        self.undo_button = QPushButton("Undo")
+        self.undo_button.setShortcut("Ctrl+Z")
+        self.undo_button.clicked.connect(self.result_editor.undo)
+        self.redo_button = QPushButton("Redo")
+        self.redo_button.setShortcut("Ctrl+Y")
+        self.redo_button.clicked.connect(self.result_editor.redo)
+        self.find_button = QPushButton("Find / replace")
+        self.find_button.setShortcut("Ctrl+F")
+        self.find_button.clicked.connect(self._show_find_replace)
+        self.wrap_button = QPushButton("Wrap lines")
+        self.wrap_button.setCheckable(True)
+        self.wrap_button.setChecked(True)
+        self.wrap_button.clicked.connect(self._toggle_line_wrap)
+        self.cleanup_button = QPushButton("Clean up")
+        cleanup_menu = QMenu(self.cleanup_button)
+        for label, action_name in (
+            ("Normalize whitespace", "normalize_whitespace"),
+            ("Remove duplicate blank lines", "remove_duplicate_blank_lines"),
+            ("Join hyphenated line breaks", "join_hyphenated_linebreaks"),
+        ):
+            action = QAction(label, cleanup_menu)
+            action.triggered.connect(
+                lambda checked=False, name=action_name: self.cleanup_requested.emit(name)
+            )
+            cleanup_menu.addAction(action)
+        self.cleanup_button.setMenu(cleanup_menu)
+        for button in (
+            self.undo_button,
+            self.redo_button,
+            self.find_button,
+            self.wrap_button,
+            self.cleanup_button,
+        ):
+            edit_actions.addWidget(button)
+        edit_actions.addStretch(1)
+        layout.addLayout(edit_actions)
+
         actions = QHBoxLayout()
         self.copy_button = QPushButton("Copy")
+        self.copy_button.setShortcut("Ctrl+Shift+C")
         self.copy_button.clicked.connect(self.copy_requested)
+        self.select_all_button = QPushButton("Select all")
+        self.select_all_button.clicked.connect(self.result_editor.selectAll)
+        self.clear_result_button = QPushButton("Clear text")
+        self.clear_result_button.clicked.connect(self.result_editor.clear)
         self.save_button = QPushButton("Save")
+        self.save_button.setShortcut("Ctrl+S")
         self.save_button.clicked.connect(self.save_requested)
         self.export_button = QPushButton("Export")
+        self.export_button.setShortcut("Ctrl+Shift+S")
         self.export_button.clicked.connect(self.export_requested)
         self.cancel_button = QPushButton("Cancel")
         self.cancel_button.clicked.connect(self.cancel_requested)
         self.extract_button = QPushButton("Extract text")
         self.extract_button.setObjectName("primaryButton")
+        self.extract_button.setShortcut("Ctrl+Return")
         self.extract_button.clicked.connect(self._request_extraction)
         actions.addStretch(1)
         actions.addWidget(self.copy_button)
+        actions.addWidget(self.select_all_button)
+        actions.addWidget(self.clear_result_button)
         actions.addWidget(self.save_button)
         actions.addWidget(self.export_button)
         actions.addWidget(self.cancel_button)
         actions.addWidget(self.extract_button)
         layout.addLayout(actions)
+        self.result_editor.textChanged.connect(self._update_controls)
         return card
 
     def display_document(self, document: ImageDocument) -> None:
@@ -277,6 +334,25 @@ class ExtractPage(Page):
         self.result_status.setObjectName("mutedLabel")
         self._refresh_label_styles(self.result_status)
 
+    def _show_find_replace(self) -> None:
+        if self._find_dialog is None:
+            self._find_dialog = FindReplaceDialog(self.result_editor, self)
+        selected = self.result_editor.textCursor().selectedText()
+        if selected:
+            self._find_dialog.find_editor.setText(selected)
+        self._find_dialog.show()
+        self._find_dialog.raise_()
+        self._find_dialog.activateWindow()
+        self._find_dialog.find_editor.setFocus()
+
+    def _toggle_line_wrap(self, enabled: bool) -> None:
+        mode = (
+            QTextOption.WrapMode.WrapAtWordBoundaryOrAnywhere
+            if enabled
+            else QTextOption.WrapMode.NoWrap
+        )
+        self.result_editor.setWordWrapMode(mode)
+
     def _request_extraction(self) -> None:
         language = self.language_selector.currentData()
         mode = self.mode_selector.currentData()
@@ -317,8 +393,18 @@ class ExtractPage(Page):
         self.extract_button.setEnabled(self._has_source and not self._ocr_busy)
         self.cancel_button.setEnabled(self._ocr_busy)
         self.copy_button.setEnabled(bool(self.result_editor.toPlainText()) and not self._ocr_busy)
+        self.select_all_button.setEnabled(bool(self.result_editor.toPlainText()))
+        self.clear_result_button.setEnabled(
+            bool(self.result_editor.toPlainText()) and not self._ocr_busy
+        )
         self.save_button.setEnabled(bool(self.result_editor.toPlainText()) and not self._ocr_busy)
         self.export_button.setEnabled(bool(self.result_editor.toPlainText()) and not self._ocr_busy)
+        self.find_button.setEnabled(bool(self.result_editor.toPlainText()))
+        self.cleanup_button.setEnabled(
+            bool(self.result_editor.toPlainText()) and not self._ocr_busy
+        )
+        self.undo_button.setEnabled(self.result_editor.document().isUndoAvailable())
+        self.redo_button.setEnabled(self.result_editor.document().isRedoAvailable())
         self.language_selector.setEnabled(not self._ocr_busy)
         self.mode_selector.setEnabled(not self._ocr_busy)
         self.confidence_selector.setEnabled(not self._ocr_busy)

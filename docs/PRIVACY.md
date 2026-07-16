@@ -9,14 +9,14 @@ PixelCopy stores a JSON settings file under the user's roaming application-data 
 Imported image files are decoded locally and remain unmodified. The current image is retained only in application memory for display and is released when replaced, cleared, or the process exits. No source copies, thumbnails, OCR text, PDF pages, or extraction history are written to storage.
 Scanned PDFs are opened locally and pages are rendered incrementally in memory. Current thumbnail and page images are not written to persistent storage, and failed pages are reported rather than uploaded or silently omitted.
 
-## Future optional history
+## Optional history
 
 History is disabled by default. While disabled, PixelCopy does not save OCR text, thumbnails, or source content. When enabled, only an explicit Save action writes the currently edited text and structured metadata to `%LOCALAPPDATA%\PixelCopy\history.sqlite3`. Deleting an item also removes an associated thumbnail only from the application-owned thumbnail directory. Multi-delete and clear-all are explicit user actions.
 
 ## Temporary data
 
-Future PDF rendering and preprocessing may require temporary images. They will use application-owned temporary locations, avoid predictable unsafe names, and be removed after completion, cancellation, or handled failure. Imported documents remain unmodified.
+PDF rendering and preprocessing use in-memory page and image representations for current workflows. Export writes only to a destination explicitly chosen by the user. If future processing requires temporary files, they must use application-owned temporary locations, avoid predictable names, and remove content after completion, cancellation, or handled failure. Imported documents remain unmodified.
 
 ## User control
 
-Users can reset preferences by deleting or resetting the settings file. Future history controls will support per-item deletion, multi-delete, and clear-all. Uninstall behavior depends on the Windows installer milestone and will be documented before release.
+Users can reset preferences by deleting or resetting the settings file. History supports per-item deletion, multi-delete, and clear-all; associated thumbnails are removed only when they are inside the application-owned thumbnail directory. Portable-build removal does not automatically delete application data under `%APPDATA%` or `%LOCALAPPDATA%`, so users retain control of settings, logs, and opted-in history.

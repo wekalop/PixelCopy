@@ -6,7 +6,7 @@ PixelCopy is a privacy-first Windows desktop application for extracting editable
 
 ## Current status
 
-PixelCopy is in pre-alpha. Milestones 1 through 9 provide image import, local OCR, preprocessing, capture, multilingual results, scanned PDFs, optional history, and TXT, Markdown, JSON, CSV, or searchable PDF export. Packaging remains a later milestone.
+PixelCopy is in pre-alpha. Milestones 1 through 10 provide image import, local OCR, preprocessing, capture, multilingual results, scanned PDFs, optional history, exports, and accessible result editing. Windows packaging remains the final milestone.
 
 ## Requirements
 
@@ -46,7 +46,7 @@ The approved product stack is Python 3.12+, PySide6, PaddleOCR, optional Tessera
 
 ## Privacy
 
-PixelCopy does not upload source content or extracted text. Milestone 1 stores only a local settings JSON file and rotating technical logs; logs must never contain OCR content. Optional extraction history will default off. See [Privacy](docs/PRIVACY.md) and [Security policy](SECURITY.md).
+PixelCopy does not upload source content or extracted text. It stores settings and privacy-conscious rotating technical logs locally; logs never contain OCR content. Optional local extraction history defaults off and writes only after an explicit Save action. See [Privacy](docs/PRIVACY.md) and [Security policy](SECURITY.md).
 
 ## Contributing
 

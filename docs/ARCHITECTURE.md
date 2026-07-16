@@ -7,10 +7,10 @@ PixelCopy separates desktop presentation from local document-processing logic so
 ## Layers
 
 - `config`: validated preferences, stable metadata, and operating-system application paths.
-- `domain`: future framework-independent typed OCR, document, and export models and protocols.
-- `services`: future use-case orchestration for import, OCR, preprocessing, capture, PDF, export, and history.
-- `ocr`, `preprocessing`, `database`, and `export`: future implementation adapters behind shared interfaces.
-- `workers`: future Qt-aware background execution with progress, cancellation, success, and error signals.
+- `domain`: framework-independent typed OCR, document, history, and export models and protocols.
+- `services`: use-case orchestration for import, OCR, preprocessing, capture, PDF, export, and history.
+- `ocr`, `preprocessing`, `database`, and `export`: implementation adapters behind shared interfaces.
+- `workers`: Qt-aware background execution with progress, cancellation, success, and error signals.
 - `ui`: presentation-only windows, pages, widgets, overlays, and styles.
 - `utils`: small shared infrastructure utilities that do not contain product workflows.
 
@@ -20,7 +20,7 @@ Dependencies flow toward domain contracts. Qt widgets do not perform OCR, disk-h
 
 `pixelcopy.main` discovers and creates per-user directories, configures privacy-conscious logging, creates the Qt application, and constructs `ApplicationController`. The controller loads immutable validated settings, applies the selected theme, coordinates persistence when the settings page emits a theme change, and owns the main window for the event-loop lifetime.
 
-`MainWindow` owns navigation and a stacked set of pages. It does not own settings persistence or processing logic. The current Extract, PDF, and History surfaces are honest foundation states rather than mock implementations.
+`MainWindow` owns navigation and a stacked set of pages. It does not own settings persistence or processing logic.
 
 ## Image import
 
@@ -56,11 +56,11 @@ The OCR options and Paddle adapter accept English, Arabic, and mixed language mo
 
 ## Data locations
 
-On Windows, roaming configuration lives under `%APPDATA%\PixelCopy`; caches, logs, and future local application data live under `%LOCALAPPDATA%\PixelCopy`. Non-Windows development uses the corresponding XDG locations. Packaged resources will be read separately from writable application data.
+On Windows, roaming configuration lives under `%APPDATA%\PixelCopy`; history, thumbnails, caches, and logs live under `%LOCALAPPDATA%\PixelCopy`. Non-Windows development uses the corresponding XDG locations. Packaged resources are read separately from writable application data.
 
 ## Background work
 
-Future OCR, preprocessing, PDF rendering, capture handoff, and database-heavy operations will run outside the GUI thread. Workers will expose typed inputs and Qt signals for progress, cooperative cancellation, completion, and understandable failures. Partial PDF failures remain visible per page.
+OCR, preprocessing, PDF rendering, and PDF OCR run outside the GUI thread. Workers expose typed inputs and Qt signals for progress, cooperative cancellation, completion, and understandable failures. PDF pages are rendered incrementally rather than accumulated, and partial failures remain visible per page. Image preview scaling is bounded; source and processed images are retained only for the active workflow. The release review found no network paths or OCR-content logging. History queries use local SQLite FTS5; a future very-large-history benchmark may justify moving bulk maintenance to a worker, but ordinary explicit item operations remain short transactions.
 
 ## Extension boundaries
 

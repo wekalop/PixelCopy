@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from itertools import pairwise
 from pathlib import Path
 
 from PySide6.QtCore import Qt, Signal
@@ -61,6 +62,7 @@ class ExtractPage(Page):
         self.page_layout.addLayout(columns, 1)
         columns.addWidget(self._build_source_card(), 1)
         columns.addWidget(self._build_result_card(), 1)
+        self._configure_tab_order()
         self._update_controls()
         self.preprocessing_panel.set_source_available(False)
 
@@ -408,6 +410,33 @@ class ExtractPage(Page):
         self.language_selector.setEnabled(not self._ocr_busy)
         self.mode_selector.setEnabled(not self._ocr_busy)
         self.confidence_selector.setEnabled(not self._ocr_busy)
+
+    def _configure_tab_order(self) -> None:
+        controls = (
+            self.open_button,
+            self.paste_button,
+            self.capture_button,
+            self.clear_button,
+            self.preview_tabs,
+            self.language_selector,
+            self.mode_selector,
+            self.confidence_selector,
+            self.result_editor,
+            self.undo_button,
+            self.redo_button,
+            self.find_button,
+            self.wrap_button,
+            self.cleanup_button,
+            self.copy_button,
+            self.select_all_button,
+            self.clear_result_button,
+            self.save_button,
+            self.export_button,
+            self.cancel_button,
+            self.extract_button,
+        )
+        for current, following in pairwise(controls):
+            QWidget.setTabOrder(current, following)
 
     @staticmethod
     def _refresh_label_styles(label: QLabel) -> None:

@@ -40,4 +40,6 @@ Export tests cover edited-text fidelity, structured JSON, UTF-8 CSV evidence, se
 
 Polish tests cover deterministic cleanup boundaries, rejection of unknown cleanup actions, editor enablement after manual edits, line-wrap toggling, literal find/replace behavior, and accessible text status surfaces.
 
+Accessibility tests verify named recognition status/progress surfaces, useful text-only empty and loading states, disabled/enabled workflow controls, and `Alt+1` through `Alt+5` navigation.
+
 Future OCR tests will use a fake engine by default. CI must not download large OCR models. Windows coordinate and DPI calculations, page failures, cancellation, reading order, RTL behavior, exporters, history, and packaging verification will be added with their implementation milestones.

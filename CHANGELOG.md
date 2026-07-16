@@ -38,6 +38,7 @@ All notable changes will be documented here. The project follows Keep a Changelo
 - TXT, Markdown, structured JSON, block CSV, and image-backed searchable PDF export.
 - Dialog-free export service API, edited-text fidelity, destination validation, and overwrite protection.
 - Keyboard-accessible result editing, literal find/replace, line wrapping, and deterministic cleanup tools.
+- Explicit tab order, accessible text loading and empty states, and completed privacy/performance review.
 
 ### Not yet implemented
 

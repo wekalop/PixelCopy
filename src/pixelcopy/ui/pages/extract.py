@@ -16,6 +16,7 @@ from PySide6.QtWidgets import (
     QPlainTextEdit,
     QProgressBar,
     QPushButton,
+    QTabWidget,
     QVBoxLayout,
     QWidget,
 )
@@ -25,6 +26,7 @@ from pixelcopy.domain.ocr import OCRMode, OCRResult
 from pixelcopy.services.image_import_service import IMAGE_FILE_FILTER
 from pixelcopy.ui.pages.base import Page
 from pixelcopy.ui.widgets.image_preview import ImagePreview
+from pixelcopy.ui.widgets.preprocessing_panel import PreprocessingPanel
 
 
 class ExtractPage(Page):
@@ -53,6 +55,7 @@ class ExtractPage(Page):
         columns.addWidget(self._build_source_card(), 1)
         columns.addWidget(self._build_result_card(), 1)
         self._update_controls()
+        self.preprocessing_panel.set_source_available(False)
 
     def _build_source_card(self) -> QFrame:
         card = QFrame()
@@ -62,8 +65,13 @@ class ExtractPage(Page):
         layout.setSpacing(12)
         layout.addWidget(self._title("Source preview"))
 
+        self.preview_tabs = QTabWidget()
         self.preview = ImagePreview()
-        layout.addWidget(self.preview, 1)
+        self.processed_preview = ImagePreview()
+        self.preview_tabs.addTab(self.preview, "Original")
+        self.preview_tabs.addTab(self.processed_preview, "Processed")
+        self.preview_tabs.setTabEnabled(1, False)
+        layout.addWidget(self.preview_tabs, 1)
         self.source_status = QLabel(
             "Drop an image here, open a file, or paste an image from the clipboard."
         )
@@ -73,6 +81,8 @@ class ExtractPage(Page):
         self.metadata = QLabel("No source selected")
         self.metadata.setObjectName("mutedLabel")
         layout.addWidget(self.metadata)
+        self.preprocessing_panel = PreprocessingPanel()
+        layout.addWidget(self.preprocessing_panel)
 
         zoom_actions = QHBoxLayout()
         self.zoom_out_button = QPushButton("-")
@@ -185,12 +195,26 @@ class ExtractPage(Page):
         )
         self.source_status.setObjectName("mutedLabel")
         self.metadata.setText("No source selected")
+        self.clear_processed_document()
         self._refresh_label_styles(self.source_status)
         self._update_controls()
 
     def set_source_available(self, available: bool) -> None:
         self._has_source = available
+        self.preprocessing_panel.set_source_available(available)
         self._update_controls()
+
+    def display_processed_document(self, document: ImageDocument) -> None:
+        """Show a derived preview while retaining the original tab."""
+        self.processed_preview.set_document(document)
+        self.preview_tabs.setTabEnabled(1, True)
+        self.preview_tabs.setCurrentIndex(1)
+
+    def clear_processed_document(self) -> None:
+        """Discard only derived pixels and return to the original preview."""
+        self.processed_preview.clear_document()
+        self.preview_tabs.setCurrentIndex(0)
+        self.preview_tabs.setTabEnabled(1, False)
 
     def set_ocr_busy(self, busy: bool) -> None:
         self._ocr_busy = busy

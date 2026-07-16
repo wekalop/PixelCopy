@@ -13,8 +13,10 @@ from pixelcopy.config.constants import APP_NAME, APP_ORGANIZATION, APP_VERSION
 from pixelcopy.config.settings import ApplicationSettings, SettingsStore
 from pixelcopy.controllers.image_import_controller import ImageImportController
 from pixelcopy.controllers.ocr_controller import OCRController
+from pixelcopy.controllers.preprocessing_controller import PreprocessingController
 from pixelcopy.ocr.base_engine import OCREngine
 from pixelcopy.ocr.paddle_engine import PaddleOCREngine
+from pixelcopy.preprocessing.pipeline import PreprocessingPipeline
 from pixelcopy.services.image_import_service import ImageImportService
 from pixelcopy.services.ocr_service import OCRService
 from pixelcopy.ui.main_window import MainWindow
@@ -61,8 +63,20 @@ class ApplicationController(QObject):
             self.window.extract_page,
             OCRService(ocr_engine or PaddleOCREngine()),
         )
+        self.preprocessing_controller = PreprocessingController(
+            self.window.extract_page,
+            PreprocessingPipeline(),
+        )
         self.image_import_controller.document_imported.connect(self.ocr_controller.set_document)
+        self.image_import_controller.document_imported.connect(
+            self.preprocessing_controller.set_document
+        )
         self.image_import_controller.document_cleared.connect(self.ocr_controller.clear_document)
+        self.image_import_controller.document_cleared.connect(
+            self.preprocessing_controller.clear_document
+        )
+        self.preprocessing_controller.document_processed.connect(self.ocr_controller.set_document)
+        self.preprocessing_controller.original_restored.connect(self.ocr_controller.set_document)
         self.window.settings_page.theme_changed.connect(self.change_theme)
 
     def start(self) -> None:

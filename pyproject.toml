@@ -19,7 +19,10 @@ classifiers = [
   "Programming Language :: Python :: 3.12",
   "Typing :: Typed",
 ]
-dependencies = ["PySide6>=6.8,<7"]
+dependencies = [
+  "Pillow>=11.1,<13",
+  "PySide6>=6.8,<7",
+]
 
 [project.optional-dependencies]
 dev = [
@@ -27,6 +30,7 @@ dev = [
   "pytest>=8.3,<9",
   "pytest-qt>=4.4,<5",
   "ruff>=0.9,<1",
+  "types-Pillow>=10.2,<13",
 ]
 build = ["pyinstaller>=6.11,<7"]
 

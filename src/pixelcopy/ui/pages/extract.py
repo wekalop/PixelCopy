@@ -40,6 +40,7 @@ class ExtractPage(Page):
     cancel_requested = Signal()
     copy_requested = Signal()
     save_requested = Signal()
+    export_requested = Signal()
 
     def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(
@@ -173,6 +174,8 @@ class ExtractPage(Page):
         self.copy_button.clicked.connect(self.copy_requested)
         self.save_button = QPushButton("Save")
         self.save_button.clicked.connect(self.save_requested)
+        self.export_button = QPushButton("Export")
+        self.export_button.clicked.connect(self.export_requested)
         self.cancel_button = QPushButton("Cancel")
         self.cancel_button.clicked.connect(self.cancel_requested)
         self.extract_button = QPushButton("Extract text")
@@ -181,6 +184,7 @@ class ExtractPage(Page):
         actions.addStretch(1)
         actions.addWidget(self.copy_button)
         actions.addWidget(self.save_button)
+        actions.addWidget(self.export_button)
         actions.addWidget(self.cancel_button)
         actions.addWidget(self.extract_button)
         layout.addLayout(actions)
@@ -314,6 +318,7 @@ class ExtractPage(Page):
         self.cancel_button.setEnabled(self._ocr_busy)
         self.copy_button.setEnabled(bool(self.result_editor.toPlainText()) and not self._ocr_busy)
         self.save_button.setEnabled(bool(self.result_editor.toPlainText()) and not self._ocr_busy)
+        self.export_button.setEnabled(bool(self.result_editor.toPlainText()) and not self._ocr_busy)
         self.language_selector.setEnabled(not self._ocr_busy)
         self.mode_selector.setEnabled(not self._ocr_busy)
         self.confidence_selector.setEnabled(not self._ocr_busy)

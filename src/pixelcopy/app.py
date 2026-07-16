@@ -12,6 +12,7 @@ from PySide6.QtWidgets import QApplication
 from pixelcopy.config.constants import APP_NAME, APP_ORGANIZATION, APP_VERSION
 from pixelcopy.config.settings import ApplicationSettings, SettingsStore
 from pixelcopy.controllers.capture_controller import CaptureController
+from pixelcopy.controllers.export_controller import ExportController
 from pixelcopy.controllers.history_controller import HistoryController
 from pixelcopy.controllers.image_import_controller import ImageImportController
 from pixelcopy.controllers.ocr_controller import OCRController
@@ -21,6 +22,7 @@ from pixelcopy.database.repositories import HistoryRepository
 from pixelcopy.ocr.base_engine import OCREngine
 from pixelcopy.ocr.paddle_engine import PaddleOCREngine
 from pixelcopy.preprocessing.pipeline import PreprocessingPipeline
+from pixelcopy.services.export_service import ExportService
 from pixelcopy.services.image_import_service import ImageImportService
 from pixelcopy.services.ocr_service import OCRService
 from pixelcopy.services.pdf_service import PDFService
@@ -111,6 +113,8 @@ class ApplicationController(QObject):
         )
         if self.history_controller is not None:
             self.ocr_controller.result_available.connect(self.history_controller.set_latest)
+        self.export_controller = ExportController(self.window.extract_page, ExportService())
+        self.ocr_controller.result_available.connect(self.export_controller.set_latest)
         application.aboutToQuit.connect(self.capture_controller.close)
         self.window.settings_page.theme_changed.connect(self.change_theme)
         self.window.settings_page.shortcut_changed.connect(self.change_shortcut)

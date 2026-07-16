@@ -22,6 +22,10 @@ Dependencies flow toward domain contracts. Qt widgets do not perform OCR, disk-h
 
 `MainWindow` owns navigation and a stacked set of pages. It does not own settings persistence or processing logic. The current Extract, PDF, and History surfaces are honest foundation states rather than mock implementations.
 
+## Image import
+
+`ImageImportService` reads encoded bytes, detects the actual format through Pillow, verifies the content, applies non-destructive EXIF display orientation, and returns an immutable framework-independent RGBA `ImageDocument`. The original file is never modified. `ImageImportController` coordinates file, drop, and clipboard sources and translates expected failures into Extract-page messages. The Qt page owns only dialogs, signals, presentation state, and the zoomable `ImagePreview`.
+
 ## Data locations
 
 On Windows, roaming configuration lives under `%APPDATA%\PixelCopy`; caches, logs, and future local application data live under `%LOCALAPPDATA%\PixelCopy`. Non-Windows development uses the corresponding XDG locations. Packaged resources will be read separately from writable application data.

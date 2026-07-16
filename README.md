@@ -6,7 +6,7 @@ PixelCopy is a privacy-first Windows desktop application for extracting editable
 
 ## Current status
 
-PixelCopy is in pre-alpha. Milestone 1 provides the Python project foundation, a polished PySide6 application shell, navigation, light and dark themes, validated settings persistence, local technical logging, tests, documentation, and CI. Image import, OCR, preprocessing, capture, PDFs, history, export, and packaging are intentionally planned for later milestones and are not yet implemented.
+PixelCopy is in pre-alpha. Milestones 1 and 2 provide the typed application foundation, polished PySide6 shell, themes and settings, and content-validated image import through a file picker, drag and drop, or clipboard. Imported PNG, JPEG, BMP, TIFF, and WebP sources have a zoomable, pannable preview and metadata. OCR, preprocessing, capture, PDFs, history, export, and packaging are planned for later milestones and are not yet implemented.
 
 ## Requirements
 
@@ -25,7 +25,7 @@ python -m pip install -e ".[dev]"
 python -m pixelcopy
 ```
 
-The current milestone installs PySide6 only at runtime. Heavy OCR and document dependencies will be introduced with the milestones that use them; CI will continue to avoid model downloads.
+The current runtime installs PySide6 and Pillow. Heavy OCR and document dependencies will be introduced with the milestones that use them; CI will continue to avoid model downloads.
 
 ## Verification
 

@@ -14,7 +14,11 @@ All notable changes will be documented here. The project follows Keep a Changelo
 - Offline unit and UI test foundations.
 - Windows and Linux GitHub Actions verification.
 - Product, architecture, OCR pipeline, UI, testing, Windows build, and privacy documentation.
+- Content-based validation and decoding for PNG, JPEG, BMP, TIFF, and WebP images.
+- File picker, drag-and-drop, and clipboard image import.
+- Aspect-preserving source preview with bounded zoom, panning, metadata, replace, and clear behavior.
+- Actionable image import errors that preserve an already valid source.
 
 ### Not yet implemented
 
-- Image import, OCR, preprocessing, screen capture, multilingual support, scanned PDF processing, extraction history, export, and Windows packaging.
+- OCR, preprocessing, screen capture, multilingual support, scanned PDF processing, extraction history, export, and Windows packaging.

@@ -24,6 +24,6 @@ Set `$env:QT_QPA_PLATFORM = "offscreen"` before pytest in headless Windows envir
 
 ## Milestone 1 coverage
 
-Current tests cover application-data directory creation, rotating log setup, required page navigation, theme stylesheet identity and focus rules, settings defaults, malformed settings recovery, field validation, settings round trips, and live theme persistence.
+Current tests cover application-data directory creation, rotating log setup, required page navigation, theme stylesheet identity and focus rules, settings defaults, malformed settings recovery, field validation, settings round trips, and live theme persistence. Image tests cover every supported encoding, content-versus-extension detection, corrupt and unsupported input, file presentation and clearing, clipboard import, metadata, and actionable errors.
 
 Future OCR tests will use a fake engine by default. CI must not download large OCR models. Windows coordinate and DPI calculations, page failures, cancellation, reading order, RTL behavior, exporters, history, and packaging verification will be added with their implementation milestones.

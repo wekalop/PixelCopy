@@ -1,0 +1,1 @@
+"""Cancellable Qt background workers."""

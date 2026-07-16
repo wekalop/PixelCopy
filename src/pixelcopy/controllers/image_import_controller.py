@@ -5,7 +5,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import cast
 
-from PySide6.QtCore import QBuffer, QIODevice, QObject
+from PySide6.QtCore import QBuffer, QIODevice, QObject, Signal
 from PySide6.QtWidgets import QApplication
 
 from pixelcopy.domain.exceptions import ImageImportError
@@ -15,6 +15,9 @@ from pixelcopy.ui.pages.extract import ExtractPage
 
 class ImageImportController(QObject):
     """Coordinate file and clipboard imports without placing decoding in widgets."""
+
+    document_imported = Signal(object)
+    document_cleared = Signal()
 
     def __init__(
         self,
@@ -28,7 +31,7 @@ class ImageImportController(QObject):
         self._service = service
         page.file_selected.connect(self.import_file)
         page.paste_requested.connect(self.import_clipboard)
-        page.source_cleared.connect(page.clear_source)
+        page.source_cleared.connect(self.clear)
 
     def import_file(self, path: Path) -> None:
         """Validate and present a selected or dropped file."""
@@ -38,6 +41,7 @@ class ImageImportController(QObject):
             self._page.display_error(str(error))
             return
         self._page.display_document(document)
+        self.document_imported.emit(document)
 
     def import_clipboard(self) -> None:
         """Encode a clipboard image locally and pass it through the same validator."""
@@ -63,3 +67,9 @@ class ImageImportController(QObject):
         finally:
             buffer.close()
         self._page.display_document(document)
+        self.document_imported.emit(document)
+
+    def clear(self) -> None:
+        """Clear presentation state and notify dependent workflows."""
+        self._page.clear_source()
+        self.document_cleared.emit()

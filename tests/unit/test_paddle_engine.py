@@ -42,3 +42,18 @@ def test_paddle_v3_result_is_normalized_without_models() -> None:
     assert result.engine_name == "PaddleOCR"
     assert options["device"] == "cpu"
     assert options["enable_mkldnn"] is False
+
+
+def test_prepare_language_initializes_and_caches_pipeline() -> None:
+    calls: list[str] = []
+
+    def factory(**kwargs: object) -> Pipeline:
+        calls.append(str(kwargs["lang"]))
+        return Pipeline()
+
+    engine = PaddleOCREngine(factory)
+    engine.prepare_language("en")
+    engine.prepare_language("en")
+    engine.prepare_language("ar")
+
+    assert calls == ["en", "ar"]

@@ -14,6 +14,7 @@ from pixelcopy.config.settings import SettingsStore
 from pixelcopy.database.connection import connect_database
 from pixelcopy.database.repositories import HistoryRepository
 from pixelcopy.database.schema import migrate
+from pixelcopy.ocr.paddle_engine import PaddleOCREngine
 from pixelcopy.utils.logging import configure_logging
 
 
@@ -39,6 +40,10 @@ def main(arguments: Sequence[str] | None = None) -> int:
     history_repository = HistoryRepository(history_connection, paths.data_dir / "thumbnails")
     controller = ApplicationController(app, settings_store, history_repository=history_repository)
     controller.start()
+    if ocr_smoke_test:
+        engine = PaddleOCREngine()
+        engine.prepare_language("en")
+        engine.prepare_language("ar")
     if smoke_test:
         QTimer.singleShot(250, app.quit)
     else:

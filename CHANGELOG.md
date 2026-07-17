@@ -52,3 +52,5 @@ All notable changes will be documented here. The project follows Keep a Changelo
 - Replaced free-form capture shortcut text with a persisted key-combination recorder and clarified the result Copy action.
 - Eliminated control, editor, and preview compression at the supported 1024×700 minimum window size.
 - Restored native labeled checkbox indicators and readable sidebar, disabled, focus, popup, and status states.
+- Preserved PaddleX OCR-core distribution metadata in portable builds so cached local models initialize correctly.
+- Strengthened release verification to initialize English and Arabic models inside the packaged executable.

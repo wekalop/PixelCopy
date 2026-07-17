@@ -34,7 +34,7 @@ python scripts/verify_release.py
 
 `build_windows.py` refuses a production build unless `paddle` and `paddleocr` are installed. It executes `PixelCopy.spec`, embeds the multi-resolution icon and Windows version resource, bundles read-only assets, and writes the onedir application to `dist\PixelCopy`. `--archive` also creates `dist\PixelCopy-portable.zip` for installer input or portable distribution.
 
-`verify_release.py` checks required resources and launches `PixelCopy.exe --smoke-test-ocr` with isolated temporary `%APPDATA%` and `%LOCALAPPDATA%` directories. Success proves that the packaged application starts and imports its bundled Paddle runtime without requiring a system Python installation. It does not download a model or inspect user content.
+`verify_release.py` checks required resources and launches `PixelCopy.exe --smoke-test-ocr` with isolated temporary `%APPDATA%` and `%LOCALAPPDATA%` directories. The smoke test initializes the cached English and Arabic pipelines, proving that the packaged application starts, imports its bundled Paddle runtime, exposes PaddleX OCR-core dependency metadata, and can load local models without a system Python installation. It does not process user content. Run `download_ocr_models.py` first so verification does not need a model download.
 
 The verified development build on Python 3.13 contained 14,029 files and 1,080,161,350 bytes before ZIP compression. Release size varies with supported dependency versions; review `build\PixelCopy\warn-PixelCopy.txt` and the final size for every release. Missing optional TensorRT or PaddleX serving plugins are acceptable because PixelCopy uses local CPU inference, not TensorRT or a serving process.
 

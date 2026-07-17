@@ -4,7 +4,7 @@
 from importlib.util import find_spec
 from pathlib import Path
 
-from PyInstaller.utils.hooks import collect_all
+from PyInstaller.utils.hooks import collect_all, copy_metadata
 
 
 ROOT = Path(SPECPATH).resolve()
@@ -21,6 +21,21 @@ for package in ("paddle", "paddleocr", "paddlex"):
         datas += package_datas
         binaries += package_binaries
         hiddenimports += package_hidden
+
+# PaddleX validates its lightweight OCR extras through distribution metadata at
+# runtime. PyInstaller discovers the imported modules but does not retain their
+# .dist-info records automatically, which makes a frozen OCR pipeline report
+# that installed dependencies are missing.
+if find_spec("paddleocr") is not None:
+    for distribution in (
+        "imagesize",
+        "opencv-contrib-python",
+        "pyclipper",
+        "pypdfium2",
+        "python-bidi",
+        "shapely",
+    ):
+        datas += copy_metadata(distribution)
 
 a = Analysis(
     [str(ROOT / "src" / "pixelcopy" / "__main__.py")],

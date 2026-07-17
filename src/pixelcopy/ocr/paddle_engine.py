@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import importlib
+import logging
 import time
 from collections.abc import Callable, Iterable, Mapping, Sequence
 from typing import Protocol, cast
@@ -12,6 +13,8 @@ from PIL import Image
 from pixelcopy.domain.exceptions import PixelCopyError
 from pixelcopy.domain.ocr import BoundingBox, OCRBlock, OCRRequest, OCRResult
 from pixelcopy.ocr.reading_order import sort_reading_order, text_from_blocks
+
+LOGGER = logging.getLogger(__name__)
 
 
 class OCRSetupError(PixelCopyError):
@@ -68,6 +71,10 @@ class PaddleOCREngine:
             image_height=request.image.height,
         )
 
+    def prepare_language(self, language: str) -> None:
+        """Initialize one cached local pipeline without processing document content."""
+        self._pipeline_for(language)
+
     def _pipeline_for(self, language: str) -> _PaddlePipeline:
         cached = self._pipelines.get(language)
         if cached is not None:
@@ -84,9 +91,13 @@ class PaddleOCREngine:
                 enable_mkldnn=False,
             )
         except Exception as error:
+            LOGGER.exception(
+                "PaddleOCR model initialization failed for language '%s'",
+                paddle_language,
+            )
             raise OCRSetupError(
                 "PaddleOCR could not initialize its local models. Install the OCR extras "
-                "and complete local model setup."
+                "and complete local model setup. See the technical log for details."
             ) from error
         self._pipelines[language] = pipeline
         return pipeline

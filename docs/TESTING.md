@@ -42,6 +42,8 @@ Polish tests cover deterministic cleanup boundaries, rejection of unknown cleanu
 
 Accessibility tests verify named recognition status/progress surfaces, useful text-only empty and loading states, disabled/enabled workflow controls, and `Alt+1` through `Alt+5` navigation.
 
+Layout regression tests verify readable result controls at the supported minimum size, themed combo popup and numeric input selectors, the explicit Copy text action, and two-key capture shortcut recording.
+
 Packaging tests cover safe source/frozen resource resolution and traversal rejection. Windows CI builds and launches a lightweight no-OCR onedir bundle; production verification additionally requires and imports bundled PaddlePaddle and PaddleOCR. Neither path downloads models during CI.
 
 Future OCR tests will use a fake engine by default. CI must not download large OCR models. Windows coordinate and DPI calculations, page failures, cancellation, reading order, RTL behavior, exporters, history, and packaging verification will be added with their implementation milestones.

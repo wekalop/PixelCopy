@@ -45,6 +45,8 @@ All notable changes will be documented here. The project follows Keep a Changelo
 ### Fixed
 
 - Disabled PaddlePaddle's incompatible Windows oneDNN path after a real OCR regression smoke test.
+- Prevented combo popup, numeric input, preprocessing, and result-action labels from clipping in the Extract workspace.
+- Replaced free-form capture shortcut text with a persisted key-combination recorder and clarified the result Copy action.
 
 ### Not yet implemented
 

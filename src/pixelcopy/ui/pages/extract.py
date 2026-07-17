@@ -12,6 +12,7 @@ from PySide6.QtWidgets import (
     QDoubleSpinBox,
     QFileDialog,
     QFrame,
+    QGridLayout,
     QHBoxLayout,
     QLabel,
     QMenu,
@@ -138,7 +139,9 @@ class ExtractPage(Page):
         layout.setSpacing(12)
         layout.addWidget(self._title("Recognized text"))
 
-        options = QHBoxLayout()
+        options = QGridLayout()
+        options.setHorizontalSpacing(10)
+        options.setVerticalSpacing(6)
         self.language_selector = QComboBox()
         self.language_selector.setAccessibleName("Recognition language")
         self.language_selector.addItem("English", "en")
@@ -155,9 +158,13 @@ class ExtractPage(Page):
         self.confidence_selector.setRange(0.0, 1.0)
         self.confidence_selector.setSingleStep(0.05)
         self.confidence_selector.setValue(0.5)
-        options.addWidget(self.language_selector)
-        options.addWidget(self.mode_selector)
-        options.addWidget(self.confidence_selector)
+        options.addWidget(QLabel("Language"), 0, 0)
+        options.addWidget(self.language_selector, 1, 0)
+        options.addWidget(QLabel("Reading mode"), 2, 0)
+        options.addWidget(self.mode_selector, 3, 0)
+        options.addWidget(QLabel("Minimum confidence"), 4, 0)
+        options.addWidget(self.confidence_selector, 5, 0)
+        options.setColumnStretch(0, 1)
         layout.addLayout(options)
 
         self.result_editor = QPlainTextEdit()
@@ -179,7 +186,7 @@ class ExtractPage(Page):
         self.progress.setVisible(False)
         layout.addWidget(self.progress)
 
-        edit_actions = QHBoxLayout()
+        edit_actions = QGridLayout()
         self.undo_button = QPushButton("Undo")
         self.undo_button.setShortcut("Ctrl+Z")
         self.undo_button.clicked.connect(self.result_editor.undo)
@@ -206,19 +213,19 @@ class ExtractPage(Page):
             )
             cleanup_menu.addAction(action)
         self.cleanup_button.setMenu(cleanup_menu)
-        for button in (
-            self.undo_button,
-            self.redo_button,
-            self.find_button,
-            self.wrap_button,
-            self.cleanup_button,
-        ):
-            edit_actions.addWidget(button)
-        edit_actions.addStretch(1)
+        edit_actions.addWidget(self.undo_button, 0, 0)
+        edit_actions.addWidget(self.redo_button, 0, 1)
+        edit_actions.addWidget(self.find_button, 1, 0, 1, 2)
+        edit_actions.addWidget(self.wrap_button, 2, 0)
+        edit_actions.addWidget(self.cleanup_button, 2, 1)
+        for column in range(2):
+            edit_actions.setColumnStretch(column, 1)
         layout.addLayout(edit_actions)
 
-        actions = QHBoxLayout()
-        self.copy_button = QPushButton("Copy")
+        actions = QGridLayout()
+        self.copy_button = QPushButton("Copy text")
+        self.copy_button.setAccessibleName("Copy recognized text")
+        self.copy_button.setToolTip("Copy the currently edited recognized text")
         self.copy_button.setShortcut("Ctrl+Shift+C")
         self.copy_button.clicked.connect(self.copy_requested)
         self.select_all_button = QPushButton("Select all")
@@ -237,14 +244,15 @@ class ExtractPage(Page):
         self.extract_button.setObjectName("primaryButton")
         self.extract_button.setShortcut("Ctrl+Return")
         self.extract_button.clicked.connect(self._request_extraction)
-        actions.addStretch(1)
-        actions.addWidget(self.copy_button)
-        actions.addWidget(self.select_all_button)
-        actions.addWidget(self.clear_result_button)
-        actions.addWidget(self.save_button)
-        actions.addWidget(self.export_button)
-        actions.addWidget(self.cancel_button)
-        actions.addWidget(self.extract_button)
+        actions.addWidget(self.copy_button, 0, 0)
+        actions.addWidget(self.extract_button, 0, 1)
+        actions.addWidget(self.select_all_button, 1, 0)
+        actions.addWidget(self.clear_result_button, 1, 1)
+        actions.addWidget(self.save_button, 2, 0)
+        actions.addWidget(self.export_button, 2, 1)
+        actions.addWidget(self.cancel_button, 3, 0, 1, 2)
+        for column in range(2):
+            actions.setColumnStretch(column, 1)
         layout.addLayout(actions)
         self.result_editor.textChanged.connect(self._update_controls)
         return card
@@ -335,6 +343,10 @@ class ExtractPage(Page):
         self.result_status.setText("Text recognition was cancelled.")
         self.result_status.setObjectName("mutedLabel")
         self._refresh_label_styles(self.result_status)
+
+    def set_capture_shortcut(self, shortcut: str) -> None:
+        """Show the active global capture shortcut beside the capture action."""
+        self.capture_button.setToolTip(f"Select a screen region ({shortcut})")
 
     def _show_find_replace(self) -> None:
         if self._find_dialog is None:

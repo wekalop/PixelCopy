@@ -70,6 +70,7 @@ class ApplicationController(QObject):
             self._settings.global_shortcut,
             self._settings.save_history,
         )
+        self.window.extract_page.set_capture_shortcut(self._settings.global_shortcut)
         self.image_import_controller = ImageImportController(
             application,
             self.window.extract_page,
@@ -138,11 +139,12 @@ class ApplicationController(QObject):
         if not value or value == self._settings.global_shortcut:
             return
         if not self.capture_controller.register_shortcut(value):
-            self.window.settings_page.shortcut_editor.setText(self._settings.global_shortcut)
+            self.window.settings_page.set_shortcut(self._settings.global_shortcut)
             return
         updated = replace(self._settings, global_shortcut=value)
         self._settings_store.save(updated)
         self._settings = updated
+        self.window.extract_page.set_capture_shortcut(value)
 
     def change_history(self, enabled: bool) -> None:
         """Persist the explicit local-history privacy preference."""

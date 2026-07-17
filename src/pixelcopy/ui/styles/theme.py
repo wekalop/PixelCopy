@@ -67,9 +67,12 @@ def stylesheet(theme: Theme) -> str:
         QPushButton#navButton {{ color: #DDE8FF; background: transparent; border: none; border-radius: 8px; padding: 11px 14px; text-align: left; font-weight: 600; }}
         QPushButton#navButton:hover {{ background: rgba(255, 255, 255, 0.10); color: white; }}
         QPushButton#navButton:checked {{ background: #FFFFFF; color: #173B7A; }}
-        QPlainTextEdit, QLineEdit, QComboBox {{ background: {color["surface"]}; color: {color["text"]}; border: 1px solid {color["border"]}; border-radius: 8px; padding: 8px; selection-background-color: {color["accent"]}; }}
+        QPlainTextEdit, QLineEdit, QKeySequenceEdit, QComboBox, QSpinBox, QDoubleSpinBox {{ background: {color["surface"]}; color: {color["text"]}; border: 1px solid {color["border"]}; border-radius: 8px; padding: 8px; selection-background-color: {color["accent"]}; }}
+        QComboBox QAbstractItemView {{ background: {color["surface"]}; color: {color["text"]}; border: 1px solid {color["border"]}; selection-background-color: {color["accent"]}; selection-color: white; outline: 0; padding: 4px; }}
+        QComboBox QAbstractItemView::item {{ min-height: 28px; padding: 4px 8px; }}
+        QComboBox::drop-down {{ border: none; width: 24px; }}
         QGraphicsView#imagePreview {{ background: {color["surface_alt"]}; border: 1px dashed {color["border"]}; border-radius: 10px; }}
-        QPlainTextEdit:focus, QLineEdit:focus, QComboBox:focus {{ border: 2px solid {color["accent"]}; }}
+        QPlainTextEdit:focus, QLineEdit:focus, QKeySequenceEdit:focus, QComboBox:focus, QSpinBox:focus, QDoubleSpinBox:focus {{ border: 2px solid {color["accent"]}; }}
         QStatusBar {{ background: {color["surface"]}; color: {color["muted"]}; border-top: 1px solid {color["border"]}; }}
         QToolTip {{ background: {color["surface"]}; color: {color["text"]}; border: 1px solid {color["border"]}; padding: 5px; }}
     """

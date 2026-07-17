@@ -18,6 +18,8 @@ Provide visible keyboard focus, logical tab order, accessible control names, use
 
 The results editor exposes native undo and redo, find and literal replace, select all, clear, line-wrap control, and explicit deterministic cleanup actions. Important shortcuts are `Ctrl+O` (open image), `Ctrl+Return` (extract), `Ctrl+F` (find/replace), `Ctrl+S` (save to enabled history), and `Ctrl+Shift+S` (export). Progress controls and result messages have accessible names and textual state; color is supplementary.
 
+Combo boxes, their popup lists, key-sequence fields, and numeric inputs use the active theme colors in every state. Extract-page options and actions use bounded grids so labels remain readable at the supported 1100×680 minimum window size. The explicit **Copy text** button copies the currently edited result. Settings provides a capture-shortcut recorder that accepts a single key chord such as `Ctrl+X`, `Alt+C`, or `Ctrl+Shift+X`; successful registration updates the Capture tooltip and persists for the next launch.
+
 ## Writing
 
 Use short, direct labels and explain recovery steps. Prefer “Could not open this image. The file is damaged or unsupported.” over technical exception text. Keep technical details in logs without including document content.

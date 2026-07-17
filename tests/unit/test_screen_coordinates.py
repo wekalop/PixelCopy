@@ -16,6 +16,7 @@ def test_negative_monitor_coordinates_map_to_local_physical_pixels() -> None:
 
 def test_global_shortcut_parser_supports_default_and_function_keys() -> None:
     assert parse_shortcut("Ctrl+Shift+X") == (0x0002 | 0x0004, ord("X"))
+    assert parse_shortcut("Ctrl+X") == (0x0002, ord("X"))
     assert parse_shortcut("Alt+F12") == (0x0001, 0x7B)
 
 

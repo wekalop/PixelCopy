@@ -3,13 +3,14 @@
 from __future__ import annotations
 
 from PySide6.QtCore import Signal
+from PySide6.QtGui import QKeySequence
 from PySide6.QtWidgets import (
     QCheckBox,
     QComboBox,
     QFormLayout,
     QFrame,
+    QKeySequenceEdit,
     QLabel,
-    QLineEdit,
     QVBoxLayout,
     QWidget,
 )
@@ -62,11 +63,22 @@ class SettingsPage(Page):
         self.theme_selector.setCurrentIndex(max(0, index))
         self.theme_selector.currentIndexChanged.connect(self._emit_theme)
         form.addRow("Theme", self.theme_selector)
-        self.shortcut_editor = QLineEdit(shortcut)
+        self.shortcut_editor = QKeySequenceEdit(QKeySequence(shortcut))
         self.shortcut_editor.setAccessibleName("Global capture shortcut")
-        self.shortcut_editor.setToolTip("Example: Ctrl+Shift+X")
+        self.shortcut_editor.setToolTip(
+            "Press one shortcut combination, such as Ctrl+X, Alt+C, or Ctrl+Shift+X"
+        )
+        self.shortcut_editor.setMaximumSequenceLength(1)
+        self.shortcut_editor.setClearButtonEnabled(True)
         self.shortcut_editor.editingFinished.connect(self._emit_shortcut)
         form.addRow("Capture shortcut", self.shortcut_editor)
+        shortcut_help = QLabel(
+            "Click the field, press a modifier and key, then release. "
+            "The shortcut works globally while PixelCopy is running."
+        )
+        shortcut_help.setObjectName("mutedLabel")
+        shortcut_help.setWordWrap(True)
+        form.addRow("", shortcut_help)
         self.history_checkbox = QCheckBox("Save extraction history locally")
         self.history_checkbox.setChecked(save_history)
         self.history_checkbox.toggled.connect(self.history_changed)
@@ -81,4 +93,8 @@ class SettingsPage(Page):
             self.theme_changed.emit(theme)
 
     def _emit_shortcut(self) -> None:
-        self.shortcut_changed.emit(self.shortcut_editor.text().strip())
+        self.shortcut_changed.emit(self.shortcut_editor.keySequence().toString().strip())
+
+    def set_shortcut(self, value: str) -> None:
+        """Restore or display the currently registered capture shortcut."""
+        self.shortcut_editor.setKeySequence(QKeySequence(value))

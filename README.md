@@ -27,9 +27,32 @@ python -m pip install -e ".[dev]"
 python -m pixelcopy
 ```
 
-The standard runtime installs PySide6, Pillow, NumPy, and OpenCV. Install `.[ocr]` to add the large local PaddleOCR runtime and models, or continue using the fake engine in tests. CI does not install OCR extras or download models.
+The standard runtime installs PySide6, Pillow, NumPy, and OpenCV. Install `.[ocr]` to add the large local PaddleOCR runtime, or continue using the fake engine in tests. OCR language models are downloaded separately as described below. CI does not install OCR extras or download models.
 
-For a Python-free portable Windows build, install `.[dev,build,ocr]`, run `python scripts/build_windows.py`, then `python scripts/verify_release.py`. See [Building on Windows](docs/BUILDING_WINDOWS.md) for model setup, CI-only packaging, size, and release checks.
+## Local OCR language setup
+
+PixelCopy currently supports these downloadable PaddleOCR language models:
+
+- `en` — required for English recognition.
+- `ar` — required for Arabic and English + Arabic recognition.
+
+Install the OCR runtime and download both supported language models before first use:
+
+```powershell
+python -m pip install -e ".[ocr]"
+python scripts/download_ocr_models.py --languages en ar
+```
+
+To install only one language model, use either:
+
+```powershell
+python scripts/download_ocr_models.py --languages en
+python scripts/download_ocr_models.py --languages ar
+```
+
+The production portable directory already contains the PaddleOCR runtime, but the language models remain user-managed and are not embedded in the executable or ZIP. Run the download command from a PixelCopy source checkout before opening the portable executable. Model setup requires internet access once; the official model files are cached under the current Windows user profile in `.paddlex`, and subsequent recognition runs locally without uploading images or recognized text.
+
+For a Python-free portable Windows build, install `.[dev,build,ocr]`, download the required models, run `python scripts/build_windows.py`, then `python scripts/verify_release.py`. See [Building on Windows](docs/BUILDING_WINDOWS.md) for model setup, CI-only packaging, size, and release checks.
 
 ## Verification
 

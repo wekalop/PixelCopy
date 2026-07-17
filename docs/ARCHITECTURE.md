@@ -58,6 +58,10 @@ The OCR options and Paddle adapter accept English, Arabic, and mixed language mo
 
 On Windows, roaming configuration lives under `%APPDATA%\PixelCopy`; history, thumbnails, caches, and logs live under `%LOCALAPPDATA%\PixelCopy`. Non-Windows development uses the corresponding XDG locations. Packaged resources are read separately from writable application data.
 
+## Windows packaging
+
+`PixelCopy.spec` creates a windowed PyInstaller onedir application. It collects installed Paddle, PaddleOCR, and PaddleX dynamic modules for production builds, explicitly excludes alternate Qt bindings, embeds Windows version metadata and the application icon, and copies only checked-in read-only assets. `resource_path` separates frozen `_MEIPASS` assets from repository development assets and rejects traversal. Build and verification scripts use argument lists without a shell; the release verifier isolates writable user directories and imports the packaged OCR runtime.
+
 ## Background work
 
 OCR, preprocessing, PDF rendering, and PDF OCR run outside the GUI thread. Workers expose typed inputs and Qt signals for progress, cooperative cancellation, completion, and understandable failures. PDF pages are rendered incrementally rather than accumulated, and partial failures remain visible per page. Image preview scaling is bounded; source and processed images are retained only for the active workflow. The release review found no network paths or OCR-content logging. History queries use local SQLite FTS5; a future very-large-history benchmark may justify moving bulk maintenance to a worker, but ordinary explicit item operations remain short transactions.

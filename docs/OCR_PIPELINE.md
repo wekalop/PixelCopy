@@ -19,7 +19,7 @@ Implemented profiles are Original, Automatic, Scanned document, Low contrast, Sm
 
 ## Engines and languages
 
-PaddleOCR 3.x is the primary local adapter and is installed through the optional `ocr` dependency group. Its runtime and English or Arabic model are loaded only when recognition begins. A fake engine keeps tests offline. Typed modes cover paragraph, single line, sparse text, and practical table-oriented extraction. English, Arabic, and mixed selection use direction-aware reading order and RTL presentation; Tesseract fallback remains future work.
+PaddleOCR 3.x is the primary local adapter and is installed through the optional `ocr` dependency group. Its CPU runtime and English or Arabic model are loaded only when recognition begins. Windows CPU inference explicitly disables MKL-DNN because PaddlePaddle 3.3's oneDNN executor does not support an array attribute used by current detection models; ordinary Paddle CPU inference remains enabled. A fake engine keeps tests offline. Typed modes cover paragraph, single line, sparse text, and practical table-oriented extraction. English, Arabic, and mixed selection use direction-aware reading order and RTL presentation; Tesseract fallback remains optional future work.
 
 ## Integrity rules
 

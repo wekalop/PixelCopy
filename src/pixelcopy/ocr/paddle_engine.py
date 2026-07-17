@@ -80,6 +80,8 @@ class PaddleOCREngine:
                 use_doc_orientation_classify=True,
                 use_doc_unwarping=False,
                 use_textline_orientation=True,
+                device="cpu",
+                enable_mkldnn=False,
             )
         except Exception as error:
             raise OCRSetupError(

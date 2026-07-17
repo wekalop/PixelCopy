@@ -26,7 +26,13 @@ class Pipeline:
 
 
 def test_paddle_v3_result_is_normalized_without_models() -> None:
-    engine = PaddleOCREngine(lambda **kwargs: Pipeline())
+    options: dict[str, object] = {}
+
+    def factory(**kwargs: object) -> Pipeline:
+        options.update(kwargs)
+        return Pipeline()
+
+    engine = PaddleOCREngine(factory)
     image = ImageDocument("test.png", "PNG", 2, 2, "RGB", bytes(16))
 
     result = engine.recognize(OCRRequest(image, OCROptions(confidence_threshold=0.5)))
@@ -34,3 +40,5 @@ def test_paddle_v3_result_is_normalized_without_models() -> None:
     assert result.full_text == "hello world"
     assert [block.text for block in result.blocks] == ["hello", "world"]
     assert result.engine_name == "PaddleOCR"
+    assert options["device"] == "cpu"
+    assert options["enable_mkldnn"] is False

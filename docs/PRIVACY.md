@@ -17,6 +17,10 @@ History is disabled by default. While disabled, PixelCopy does not save OCR text
 
 PDF rendering and preprocessing use in-memory page and image representations for current workflows. Export writes only to a destination explicitly chosen by the user. If future processing requires temporary files, they must use application-owned temporary locations, avoid predictable names, and remove content after completion, cancellation, or handled failure. Imported documents remain unmodified.
 
+## OCR model downloads
+
+The portable application contains the local OCR runtime but not model caches. The explicit model setup script, or first recognition for a language on a clean machine, may download official PaddleOCR model weights into a per-user cache. No source image, PDF page, screenshot, clipboard image, recognized text, history record, or source path is included in those model requests. Once weights are present, recognition runs locally. Release bundles and Git history never include the developer's model cache.
+
 ## User control
 
 Users can reset preferences by deleting or resetting the settings file. History supports per-item deletion, multi-delete, and clear-all; associated thumbnails are removed only when they are inside the application-owned thumbnail directory. Portable-build removal does not automatically delete application data under `%APPDATA%` or `%LOCALAPPDATA%`, so users retain control of settings, logs, and opted-in history.

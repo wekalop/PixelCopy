@@ -7,6 +7,7 @@ from collections.abc import Sequence
 from dataclasses import replace
 
 from PySide6.QtCore import QObject, Qt
+from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import QApplication
 
 from pixelcopy.config.constants import APP_NAME, APP_ORGANIZATION, APP_VERSION
@@ -28,6 +29,7 @@ from pixelcopy.services.ocr_service import OCRService
 from pixelcopy.services.pdf_service import PDFService
 from pixelcopy.ui.main_window import MainWindow
 from pixelcopy.ui.styles.theme import Theme, apply_theme
+from pixelcopy.utils.resources import resource_path
 
 
 def create_application(arguments: Sequence[str] | None = None) -> QApplication:
@@ -42,6 +44,9 @@ def create_application(arguments: Sequence[str] | None = None) -> QApplication:
     app.setApplicationVersion(APP_VERSION)
     app.setStyle("Fusion")
     app.setAttribute(Qt.ApplicationAttribute.AA_DontShowIconsInMenus, False)
+    icon_path = resource_path("icons/pixelcopy.png")
+    if icon_path.is_file():
+        app.setWindowIcon(QIcon(str(icon_path)))
     return app
 
 

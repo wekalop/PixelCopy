@@ -39,6 +39,12 @@ All notable changes will be documented here. The project follows Keep a Changelo
 - Dialog-free export service API, edited-text fidelity, destination validation, and overwrite protection.
 - Keyboard-accessible result editing, literal find/replace, line wrapping, and deterministic cleanup tools.
 - Explicit tab order, accessible text loading and empty states, and completed privacy/performance review.
+- PyInstaller onedir configuration with original icon, Windows version metadata, and frozen resource handling.
+- Guarded production and lightweight CI build modes, local OCR model setup, and packaged OCR-import verification.
+
+### Fixed
+
+- Disabled PaddlePaddle's incompatible Windows oneDNN path after a real OCR regression smoke test.
 
 ### Not yet implemented
 

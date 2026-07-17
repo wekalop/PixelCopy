@@ -69,7 +69,7 @@ For headless environments, set `QT_QPA_PLATFORM=offscreen` before running UI tes
 
 PixelCopy uses a typed `src` layout with presentation, configuration, domain, services, infrastructure adapters, and workers kept separate as those layers are introduced. Qt widgets remain presentation-focused; expensive work will use cancellable background workers and signals.
 
-The approved product stack is Python 3.12+, PySide6, PaddleOCR, optional Tesseract, OpenCV, Pillow, PyMuPDF, SQLite, pytest, Ruff, mypy, PyInstaller, and GitHub Actions. See [Architecture](docs/ARCHITECTURE.md) and [Product specification](docs/PRODUCT_SPEC.md).
+The approved product stack is Python 3.12+, PySide6, PaddleOCR, optional Tesseract, OpenCV, Pillow, PyMuPDF, SQLite, pytest, Ruff, mypy, PyInstaller, and GitHub Actions. Start with the [complete project guide](docs/PROJECT_GUIDE.md), then see the concise [architecture](docs/ARCHITECTURE.md) and [product specification](docs/PRODUCT_SPEC.md).
 
 ## Privacy
 

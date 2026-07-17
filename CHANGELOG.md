@@ -47,6 +47,8 @@ All notable changes will be documented here. The project follows Keep a Changelo
 
 ### Fixed
 
+- Made the configurable capture hotkey use a dedicated Windows message loop so it triggers
+  Capture reliably while PixelCopy is minimized, and added visible registration status.
 - Disabled PaddlePaddle's incompatible Windows oneDNN path after a real OCR regression smoke test.
 - Prevented combo popup, numeric input, preprocessing, and result-action labels from clipping in the Extract workspace.
 - Replaced free-form capture shortcut text with a persisted key-combination recorder and clarified the result Copy action.

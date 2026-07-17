@@ -171,7 +171,7 @@ Services implement application use cases and hide infrastructure details:
 - `PDFService` inspects and renders PDF pages.
 - `ScreenshotService` combines selected areas across scaled monitors.
 - `ExportService` chooses an exporter and validates destinations.
-- `WindowsGlobalShortcut` wraps the Windows `RegisterHotKey` API.
+- `WindowsGlobalShortcut` wraps the Windows `RegisterHotKey` API and receives hotkey messages on a dedicated native thread, so capture remains available while the window is minimized.
 
 Services receive explicit inputs and return typed values or actionable exceptions. They do not reach into UI controls.
 

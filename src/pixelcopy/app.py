@@ -132,19 +132,39 @@ class ApplicationController(QObject):
 
     def enable_global_shortcut(self) -> None:
         """Register the configured Windows screen-capture shortcut."""
-        self.capture_controller.register_shortcut(self._settings.global_shortcut)
+        shortcut = self._settings.global_shortcut
+        if self.capture_controller.register_shortcut(shortcut):
+            self.window.settings_page.set_shortcut_status(
+                f"Active globally: {shortcut}. It also works while PixelCopy is minimized."
+            )
+            return
+        self.window.settings_page.set_shortcut_status(
+            self.capture_controller.last_shortcut_error
+            or f"Could not register {shortcut}. Choose a different shortcut.",
+            error=True,
+        )
 
     def change_shortcut(self, value: str) -> None:
         """Register and persist a valid conflict-free capture shortcut."""
-        if not value or value == self._settings.global_shortcut:
+        if not value or (
+            value == self._settings.global_shortcut and self.capture_controller.shortcut_active
+        ):
             return
         if not self.capture_controller.register_shortcut(value):
             self.window.settings_page.set_shortcut(self._settings.global_shortcut)
+            self.window.settings_page.set_shortcut_status(
+                self.capture_controller.last_shortcut_error
+                or f"Could not register {value}. Choose a different shortcut.",
+                error=True,
+            )
             return
         updated = replace(self._settings, global_shortcut=value)
         self._settings_store.save(updated)
         self._settings = updated
         self.window.extract_page.set_capture_shortcut(value)
+        self.window.settings_page.set_shortcut_status(
+            f"Active globally: {value}. It also works while PixelCopy is minimized."
+        )
 
     def change_history(self, enabled: bool) -> None:
         """Persist the explicit local-history privacy preference."""

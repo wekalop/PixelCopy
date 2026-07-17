@@ -1,14 +1,12 @@
 """Windows RegisterHotKey lifecycle integration."""
 
-from __future__ import annotations
-
 import ctypes
 import ctypes.wintypes
 import sys
-from typing import Protocol, cast
+import threading
+from typing import Any, Protocol, cast
 
-from PySide6.QtCore import QAbstractNativeEventFilter, QByteArray, QObject, Signal
-from PySide6.QtWidgets import QApplication
+from PySide6.QtCore import QObject, Signal
 
 
 class ShortcutRegistrationError(RuntimeError):
@@ -16,6 +14,9 @@ class ShortcutRegistrationError(RuntimeError):
 
 
 class _NativeFunction(Protocol):
+    argtypes: list[object]
+    restype: object
+
     def __call__(self, *arguments: int) -> int: ...
 
 
@@ -42,59 +43,147 @@ def parse_shortcut(shortcut: str) -> tuple[int, int]:
     return modifiers, key_code
 
 
-class WindowsGlobalShortcut(QObject, QAbstractNativeEventFilter):
-    """Register one application-wide shortcut and unregister it cleanly."""
+class WindowsGlobalShortcut(QObject):
+    """Own a Windows hotkey on a dedicated native message-loop thread."""
 
     activated = Signal()
     HOTKEY_ID = 0x5043
 
-    def __init__(self, application: QApplication) -> None:
-        QObject.__init__(self)
-        QAbstractNativeEventFilter.__init__(self)
-        self._application = application
+    def __init__(self, parent: QObject | None = None) -> None:
+        super().__init__(parent)
         self._registered = False
+        self._modifiers = 0
+        self._key_code = 0
+        self._thread: threading.Thread | None = None
+        self._thread_id = 0
+        self._ready = threading.Event()
+        self._registration_succeeded = False
 
     def register(self, shortcut: str) -> None:
         if sys.platform != "win32":
             raise ShortcutRegistrationError("Global capture shortcuts currently require Windows.")
-        self.unregister()
         modifiers, key_code = parse_shortcut(shortcut)
-        register_hot_key, _ = self._native_functions()
-        if not register_hot_key(0, self.HOTKEY_ID, modifiers, key_code):
+        previous = (self._registered, self._modifiers, self._key_code)
+        self.unregister()
+        if not self._start_worker(modifiers, key_code):
+            restored = False
+            if previous[0]:
+                restored = self._start_worker(previous[1], previous[2])
+                if restored:
+                    self._registered = True
+                    self._modifiers = previous[1]
+                    self._key_code = previous[2]
             raise ShortcutRegistrationError(
                 f"Could not register {shortcut}. Another application may already use it."
+                + (" The previous shortcut remains active." if restored else "")
             )
-        self._application.installNativeEventFilter(self)
         self._registered = True
+        self._modifiers = modifiers
+        self._key_code = key_code
 
     def unregister(self) -> None:
-        if not self._registered:
+        if self._thread is None:
+            self._registered = False
             return
-        _, unregister_hot_key = self._native_functions()
-        unregister_hot_key(0, self.HOTKEY_ID)
-        self._application.removeNativeEventFilter(self)
+        if self._thread_id:
+            user32 = ctypes.WinDLL("user32", use_last_error=True)
+            post_thread_message = cast(Any, user32.PostThreadMessageW)
+            post_thread_message.argtypes = [
+                ctypes.wintypes.DWORD,
+                ctypes.wintypes.UINT,
+                ctypes.wintypes.WPARAM,
+                ctypes.wintypes.LPARAM,
+            ]
+            post_thread_message.restype = ctypes.wintypes.BOOL
+            post_thread_message(self._thread_id, 0x0012, 0, 0)
+        self._thread.join(timeout=2.0)
+        self._thread = None
+        self._thread_id = 0
         self._registered = False
+        self._modifiers = 0
+        self._key_code = 0
 
-    def nativeEventFilter(
-        self,
-        event_type: QByteArray | bytes | bytearray | memoryview[int],
-        message: int,
-    ) -> tuple[bool, int]:
-        del event_type
-        if sys.platform == "win32" and message:
-            msg = ctypes.wintypes.MSG.from_address(message)
-            if msg.message == 0x0312 and int(msg.wParam) == self.HOTKEY_ID:
-                self.activated.emit()
-                return True, 0
-        return False, 0
+    def close(self) -> None:
+        """Release the registered hotkey and stop its native message loop."""
+        self.unregister()
+
+    def _start_worker(self, modifiers: int, key_code: int) -> bool:
+        self._ready.clear()
+        self._registration_succeeded = False
+        self._thread = threading.Thread(
+            target=self._message_loop,
+            args=(modifiers, key_code),
+            name="PixelCopyGlobalShortcut",
+            daemon=True,
+        )
+        self._thread.start()
+        if not self._ready.wait(timeout=2.0):
+            self.unregister()
+            return False
+        if not self._registration_succeeded:
+            self._thread.join(timeout=2.0)
+            self._thread = None
+            self._thread_id = 0
+            return False
+        return True
+
+    def _message_loop(self, modifiers: int, key_code: int) -> None:
+        register_hot_key, unregister_hot_key = self._native_functions()
+        user32 = ctypes.WinDLL("user32", use_last_error=True)
+        kernel32 = ctypes.WinDLL("kernel32", use_last_error=True)
+        get_current_thread_id = cast(Any, kernel32.GetCurrentThreadId)
+        get_current_thread_id.argtypes = []
+        get_current_thread_id.restype = ctypes.wintypes.DWORD
+        get_message = cast(Any, user32.GetMessageW)
+        get_message.argtypes = [
+            ctypes.POINTER(ctypes.wintypes.MSG),
+            ctypes.wintypes.HWND,
+            ctypes.wintypes.UINT,
+            ctypes.wintypes.UINT,
+        ]
+        get_message.restype = ctypes.wintypes.BOOL
+        peek_message = cast(Any, user32.PeekMessageW)
+        peek_message.argtypes = [
+            ctypes.POINTER(ctypes.wintypes.MSG),
+            ctypes.wintypes.HWND,
+            ctypes.wintypes.UINT,
+            ctypes.wintypes.UINT,
+            ctypes.wintypes.UINT,
+        ]
+        peek_message.restype = ctypes.wintypes.BOOL
+        self._thread_id = int(get_current_thread_id())
+        message = ctypes.wintypes.MSG()
+        peek_message(ctypes.byref(message), None, 0, 0, 0)
+        self._registration_succeeded = bool(
+            register_hot_key(0, self.HOTKEY_ID, modifiers, key_code)
+        )
+        self._ready.set()
+        if not self._registration_succeeded:
+            return
+        try:
+            while get_message(ctypes.byref(message), None, 0, 0) > 0:
+                if message.message == 0x0312 and int(message.wParam) == self.HOTKEY_ID:
+                    self.activated.emit()
+        finally:
+            unregister_hot_key(0, self.HOTKEY_ID)
 
     @staticmethod
     def _native_functions() -> tuple[_NativeFunction, _NativeFunction]:
         user32 = ctypes.WinDLL("user32", use_last_error=True)
-        return (
-            cast(_NativeFunction, user32.RegisterHotKey),
-            cast(_NativeFunction, user32.UnregisterHotKey),
-        )
+        register_hot_key = cast(_NativeFunction, user32.RegisterHotKey)
+        register_hot_key.argtypes = [
+            ctypes.wintypes.HWND,
+            ctypes.c_int,
+            ctypes.wintypes.UINT,
+            ctypes.wintypes.UINT,
+        ]
+        register_hot_key.restype = ctypes.wintypes.BOOL
+        unregister_hot_key = cast(_NativeFunction, user32.UnregisterHotKey)
+        unregister_hot_key.argtypes = [ctypes.wintypes.HWND, ctypes.c_int]
+        unregister_hot_key.restype = ctypes.wintypes.BOOL
+        return register_hot_key, unregister_hot_key
 
-    def __del__(self) -> None:
-        self.unregister()
+    @property
+    def is_registered(self) -> bool:
+        """Return whether Windows currently owns this application's hotkey."""
+        return self._registered

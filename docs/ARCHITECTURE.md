@@ -40,7 +40,7 @@ Immutable `PreprocessingOptions` and named profiles feed `PreprocessingPipeline`
 
 ## Windows capture and multilingual results
 
-`WindowsGlobalShortcut` owns `RegisterHotKey` registration and native-event filtering and always unregisters during application shutdown. `ScreenCaptureOverlay` spans the union of monitor geometries; `ScreenshotService` intersects the selection per screen and maps logical coordinates to physical pixels using each display scale. `CaptureController` returns the local image to the ordinary validated import path and restores the main window.
+`WindowsGlobalShortcut` owns `RegisterHotKey` on a dedicated Windows message-loop thread, emits its Qt signal safely across the thread boundary, and always unregisters during application shutdown. This keeps capture active when the main window is minimized. `ScreenCaptureOverlay` spans the union of monitor geometries; `ScreenshotService` intersects the selection per screen and maps logical coordinates to physical pixels using each display scale. `CaptureController` returns the local image to the ordinary validated import path, restores a minimized main window, and requests foreground focus.
 
 The OCR options and Paddle adapter accept English, Arabic, and mixed language modes. Shared reading order reverses horizontal ordering for RTL results while preserving visual lines, and the editor applies an RTL text direction for Arabic or mixed output.
 

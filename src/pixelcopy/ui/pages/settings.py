@@ -79,6 +79,11 @@ class SettingsPage(Page):
         shortcut_help.setObjectName("mutedLabel")
         shortcut_help.setWordWrap(True)
         form.addRow("", shortcut_help)
+        self.shortcut_status = QLabel("The global shortcut is registered when PixelCopy starts.")
+        self.shortcut_status.setObjectName("mutedLabel")
+        self.shortcut_status.setAccessibleName("Capture shortcut registration status")
+        self.shortcut_status.setWordWrap(True)
+        form.addRow("Status", self.shortcut_status)
         self.history_checkbox = QCheckBox("Save extraction history locally")
         self.history_checkbox.setChecked(save_history)
         self.history_checkbox.toggled.connect(self.history_changed)
@@ -98,3 +103,10 @@ class SettingsPage(Page):
     def set_shortcut(self, value: str) -> None:
         """Restore or display the currently registered capture shortcut."""
         self.shortcut_editor.setKeySequence(QKeySequence(value))
+
+    def set_shortcut_status(self, message: str, *, error: bool = False) -> None:
+        """Display whether Windows accepted the configured global shortcut."""
+        self.shortcut_status.setText(message)
+        self.shortcut_status.setObjectName("errorLabel" if error else "successLabel")
+        self.shortcut_status.style().unpolish(self.shortcut_status)
+        self.shortcut_status.style().polish(self.shortcut_status)

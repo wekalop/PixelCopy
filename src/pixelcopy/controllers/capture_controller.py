@@ -26,7 +26,8 @@ class CaptureController(QObject):
         self._page = page
         self._image_import = image_import
         self._overlay = ScreenCaptureOverlay(ScreenshotService())
-        self._shortcut = WindowsGlobalShortcut(application)
+        self._shortcut = WindowsGlobalShortcut(page)
+        self._last_shortcut_error: str | None = None
         page.capture_requested.connect(self.begin_capture)
         self._shortcut.activated.connect(self.begin_capture)
         self._overlay.captured.connect(self._captured)
@@ -36,12 +37,24 @@ class CaptureController(QObject):
         try:
             self._shortcut.register(shortcut)
         except ShortcutRegistrationError as error:
+            self._last_shortcut_error = str(error)
             self._page.display_error(str(error))
             return False
+        self._last_shortcut_error = None
         return True
 
+    @property
+    def shortcut_active(self) -> bool:
+        """Return whether the configured capture hotkey is registered with Windows."""
+        return self._shortcut.is_registered
+
+    @property
+    def last_shortcut_error(self) -> str | None:
+        """Return the latest registration error for presentation in Settings."""
+        return self._last_shortcut_error
+
     def close(self) -> None:
-        self._shortcut.unregister()
+        self._shortcut.close()
         self._overlay.close()
 
     @Slot()
@@ -53,6 +66,9 @@ class CaptureController(QObject):
         if isinstance(value, QImage):
             self._image_import.import_qimage(value, "Screen capture")
             window = self._page.window()
-            window.show()
+            if window.isMinimized():
+                window.showNormal()
+            else:
+                window.show()
             window.raise_()
             window.activateWindow()

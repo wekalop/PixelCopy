@@ -3,12 +3,13 @@ from __future__ import annotations
 from pathlib import Path
 
 from PySide6.QtCore import QSize
-from PySide6.QtGui import QKeySequence
+from PySide6.QtGui import QImage, QKeySequence
 from PySide6.QtWidgets import QApplication
 from pytestqt.qtbot import QtBot
 
 from pixelcopy.app import ApplicationController
 from pixelcopy.config.settings import SettingsStore
+from pixelcopy.controllers.capture_controller import CaptureController
 from pixelcopy.ui.main_window import MainWindow
 from pixelcopy.ui.pages.settings import SettingsPage
 from pixelcopy.ui.styles.theme import Theme, stylesheet
@@ -64,3 +65,23 @@ def test_light_theme_styles_combo_popup_and_numeric_inputs() -> None:
     assert "QComboBox QAbstractItemView" in light
     assert "QDoubleSpinBox" in light
     assert "QKeySequenceEdit" in light
+
+
+def test_capture_result_restores_a_minimized_window(qtbot: QtBot, qapp: QApplication) -> None:
+    window = MainWindow()
+    qtbot.addWidget(window)
+    imported: list[tuple[QImage, str]] = []
+
+    class ImageImportStub:
+        def import_qimage(self, image: QImage, source: str) -> None:
+            imported.append((image, source))
+
+    controller = CaptureController(qapp, window.extract_page, ImageImportStub())  # type: ignore[arg-type]
+    window.showMinimized()
+    qtbot.waitUntil(window.isMinimized)
+
+    controller._captured(QImage(10, 10, QImage.Format.Format_RGB32))
+    qtbot.waitUntil(lambda: not window.isMinimized())
+
+    assert imported[0][1] == "Screen capture"
+    controller.close()

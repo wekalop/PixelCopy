@@ -22,6 +22,8 @@ Dependencies flow toward domain contracts. Qt widgets do not perform OCR, disk-h
 
 `MainWindow` owns navigation and a stacked set of pages. It does not own settings persistence or processing logic.
 
+Presentation styling is centralized in immutable semantic `DesignTokens`, shared spacing and typography constants, and one generated application stylesheet. Control minimum height is derived from the active application font rather than duplicated as fixed page geometry. `Page` provides shell spacing, while workflow pages own responsive layouts. The Extract workspace uses a non-collapsible `QSplitter`; `PreprocessingPanel` contains a bounded `QScrollArea` for advanced settings so adding options cannot collapse the preview or result editor.
+
 ## Image import
 
 `ImageImportService` reads encoded bytes, detects the actual format through Pillow, verifies the content, applies non-destructive EXIF display orientation, and returns an immutable framework-independent RGBA `ImageDocument`. The original file is never modified. `ImageImportController` coordinates file, drop, and clipboard sources and translates expected failures into Extract-page messages. The Qt page owns only dialogs, signals, presentation state, and the zoomable `ImagePreview`.

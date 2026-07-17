@@ -41,13 +41,14 @@ All notable changes will be documented here. The project follows Keep a Changelo
 - Explicit tab order, accessible text loading and empty states, and completed privacy/performance review.
 - PyInstaller onedir configuration with original icon, Windows version metadata, and frozen resource handling.
 - Guarded production and lightweight CI build modes, local OCR model setup, and packaged OCR-import verification.
+- Responsive split source/result workspace with an informative image-drop empty state.
+- Central semantic design tokens, font-aware control sizing, and complete light/dark control states.
+- Collapsible, scrollable processing settings and compact context-aware result actions.
 
 ### Fixed
 
 - Disabled PaddlePaddle's incompatible Windows oneDNN path after a real OCR regression smoke test.
 - Prevented combo popup, numeric input, preprocessing, and result-action labels from clipping in the Extract workspace.
 - Replaced free-form capture shortcut text with a persisted key-combination recorder and clarified the result Copy action.
-
-### Not yet implemented
-
-- Windows packaging.
+- Eliminated control, editor, and preview compression at the supported 1024×700 minimum window size.
+- Restored native labeled checkbox indicators and readable sidebar, disabled, focus, popup, and status states.

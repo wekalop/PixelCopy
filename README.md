@@ -8,6 +8,8 @@ PixelCopy is a privacy-first Windows desktop application for extracting editable
 
 PixelCopy is in pre-alpha. Milestones 1 through 11 provide image import, local OCR, preprocessing, capture, multilingual results, scanned PDFs, optional history, exports, accessible result editing, and a verified portable Windows build configuration.
 
+The Extract workspace is optimized for normal Windows desktop sizes down to 1024×700. Resize the source/result divider to prioritize the preview or editor; advanced processing stays collapsed until needed and scrolls independently on smaller displays. Light and dark themes share accessible semantic control states.
+
 ## Requirements
 
 - Windows 10 or Windows 11

@@ -42,7 +42,7 @@ Polish tests cover deterministic cleanup boundaries, rejection of unknown cleanu
 
 Accessibility tests verify named recognition status/progress surfaces, useful text-only empty and loading states, disabled/enabled workflow controls, and `Alt+1` through `Alt+5` navigation.
 
-Layout regression tests verify readable result controls at the supported minimum size, themed combo popup and numeric input selectors, the explicit Copy text action, and two-key capture shortcut recording.
+Layout regression tests verify readable result controls at the supported minimum size, themed combo popup and numeric input selectors, the explicit Copy text action, and two-key capture shortcut recording. Responsive Extract tests show the application at 1024×720, 1280×800, 1440×900, and 1920×1080 and assert protected preview/editor height, compound-control size hints, labeled checkboxes, advanced-panel scrolling, contextual cancellation, bounded percentage confidence, tab-chain reachability, semantic light/dark tokens, complete stylesheet states, and absence of unresolved stylesheet resources.
 
 Packaging tests cover safe source/frozen resource resolution and traversal rejection. Windows CI builds and launches a lightweight no-OCR onedir bundle; production verification additionally requires and imports bundled PaddlePaddle and PaddleOCR. Neither path downloads models during CI.
 

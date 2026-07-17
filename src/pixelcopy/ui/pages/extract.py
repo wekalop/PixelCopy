@@ -497,16 +497,12 @@ class ExtractPage(Page):
         self.more_actions_button.setVisible(has_text and not self._ocr_busy)
         self.copy_button.setEnabled(has_text and not self._ocr_busy)
         self.select_all_button.setEnabled(has_text)
-        self.clear_result_button.setEnabled(
-            has_text and not self._ocr_busy
-        )
+        self.clear_result_button.setEnabled(has_text and not self._ocr_busy)
         self.save_button.setEnabled(has_text and not self._ocr_busy)
         self.export_button.setEnabled(has_text and not self._ocr_busy)
         self.more_actions_button.setEnabled(has_text)
         self.find_button.setEnabled(has_text)
-        self.cleanup_button.setEnabled(
-            has_text and not self._ocr_busy
-        )
+        self.cleanup_button.setEnabled(has_text and not self._ocr_busy)
         self.undo_button.setEnabled(self.result_editor.document().isUndoAvailable())
         self.redo_button.setEnabled(self.result_editor.document().isRedoAvailable())
         self.language_selector.setEnabled(not self._ocr_busy)

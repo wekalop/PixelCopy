@@ -72,7 +72,7 @@ _TOKENS: dict[Theme, DesignTokens] = {
         navigation_selected="#FFFFFF",
     ),
     Theme.DARK: DesignTokens(
-        background="#0F1520",
+        background="#101521",
         surface="#171F2C",
         elevated_surface="#1B2533",
         surface_subtle="#202B3A",

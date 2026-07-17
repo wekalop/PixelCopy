@@ -12,8 +12,8 @@ class Page(QWidget):
         super().__init__(parent)
         self.setObjectName(f"{title.lower()}Page")
         self.page_layout = QVBoxLayout(self)
-        self.page_layout.setContentsMargins(34, 30, 34, 28)
-        self.page_layout.setSpacing(18)
+        self.page_layout.setContentsMargins(24, 20, 24, 18)
+        self.page_layout.setSpacing(10)
 
         heading = QLabel(title)
         heading.setObjectName("pageTitle")

@@ -27,8 +27,8 @@ class MainWindow(QMainWindow):
         super().__init__(parent)
         self.setObjectName("mainWindow")
         self.setWindowTitle(APP_NAME)
-        self.resize(QSize(1180, 760))
-        self.setMinimumSize(QSize(1100, 680))
+        self.resize(QSize(1280, 800))
+        self.setMinimumSize(QSize(1024, 700))
 
         root = QWidget()
         root.setObjectName("appRoot")

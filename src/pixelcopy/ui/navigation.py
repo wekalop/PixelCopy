@@ -43,11 +43,12 @@ class NavigationSidebar(QWidget):
     def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent)
         self.setObjectName("sidebar")
-        self.setFixedWidth(220)
+        self.setMinimumWidth(184)
+        self.setMaximumWidth(210)
         self._buttons: dict[str, QPushButton] = {}
 
         layout = QVBoxLayout(self)
-        layout.setContentsMargins(20, 26, 20, 20)
+        layout.setContentsMargins(16, 24, 16, 18)
         layout.setSpacing(8)
 
         brand = QLabel(APP_NAME)
@@ -57,7 +58,7 @@ class NavigationSidebar(QWidget):
         tagline.setWordWrap(True)
         layout.addWidget(brand)
         layout.addWidget(tagline)
-        layout.addSpacing(26)
+        layout.addSpacing(22)
 
         group = QButtonGroup(self)
         group.setExclusive(True)
